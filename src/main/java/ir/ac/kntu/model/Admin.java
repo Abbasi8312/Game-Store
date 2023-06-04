@@ -1,4 +1,4 @@
-package ir.ac.kntu.user;
+package ir.ac.kntu.model;
 
 public class Admin {
     private String userName;

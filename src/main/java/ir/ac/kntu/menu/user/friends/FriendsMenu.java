@@ -2,7 +2,7 @@ package ir.ac.kntu.menu.user.friends;
 
 import ir.ac.kntu.menu.user.UserMenu;
 import ir.ac.kntu.menu.user.game.SelectGame;
-import ir.ac.kntu.user.User;
+import ir.ac.kntu.model.User;
 import ir.ac.kntu.utility.ConsoleCommand;
 
 import java.util.ArrayList;

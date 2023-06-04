@@ -1,7 +1,7 @@
 package ir.ac.kntu.menu.admin.games;
 
-import ir.ac.kntu.game.Game;
-import ir.ac.kntu.game.Genre;
+import ir.ac.kntu.model.Game;
+import ir.ac.kntu.model.Genre;
 import ir.ac.kntu.menu.admin.AdminMenu;
 import ir.ac.kntu.menu.user.game.NextMenu;
 import ir.ac.kntu.menu.user.game.SelectGame;

@@ -1,9 +1,9 @@
 package ir.ac.kntu;
 
-import ir.ac.kntu.data.Database;
-import ir.ac.kntu.game.Game;
+import ir.ac.kntu.database.Database;
+import ir.ac.kntu.model.Game;
 import ir.ac.kntu.menu.auth.AuthMenu;
-import ir.ac.kntu.user.User;
+import ir.ac.kntu.model.User;
 
 public class Main {
 

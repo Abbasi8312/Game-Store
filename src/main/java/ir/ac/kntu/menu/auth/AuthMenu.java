@@ -3,8 +3,8 @@ package ir.ac.kntu.menu.auth;
 import ir.ac.kntu.menu.Menu;
 import ir.ac.kntu.menu.admin.options.AdminOptions;
 import ir.ac.kntu.menu.user.options.UserOptions;
-import ir.ac.kntu.user.Admin;
-import ir.ac.kntu.user.User;
+import ir.ac.kntu.model.Admin;
+import ir.ac.kntu.model.User;
 
 import static ir.ac.kntu.utility.ConsoleCommand.clearScreen;
 

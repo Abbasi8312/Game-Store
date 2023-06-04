@@ -3,7 +3,7 @@ package ir.ac.kntu.menu.admin.users;
 import ir.ac.kntu.menu.admin.AdminMenu;
 import ir.ac.kntu.menu.auth.AuthMenu;
 import ir.ac.kntu.menu.user.profile.ProfileMenu;
-import ir.ac.kntu.user.User;
+import ir.ac.kntu.model.User;
 import ir.ac.kntu.utility.ConsoleCommand;
 
 public class AdminUserMenu extends AdminMenu {

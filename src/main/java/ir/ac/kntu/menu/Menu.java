@@ -1,6 +1,6 @@
 package ir.ac.kntu.menu;
 
-import ir.ac.kntu.data.Database;
+import ir.ac.kntu.database.Database;
 import ir.ac.kntu.utility.ScannerWrapper;
 
 public abstract class Menu {

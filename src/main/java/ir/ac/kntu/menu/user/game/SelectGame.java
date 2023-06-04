@@ -1,11 +1,11 @@
 package ir.ac.kntu.menu.user.game;
 
-import ir.ac.kntu.game.Game;
+import ir.ac.kntu.model.Game;
 import ir.ac.kntu.menu.admin.games.AdminGameMenu;
 import ir.ac.kntu.menu.user.UserMenu;
 import ir.ac.kntu.menu.user.library.LibraryMenu;
 import ir.ac.kntu.menu.user.store.StoreMenu;
-import ir.ac.kntu.user.User;
+import ir.ac.kntu.model.User;
 import ir.ac.kntu.utility.ConsoleCommand;
 
 import java.util.List;

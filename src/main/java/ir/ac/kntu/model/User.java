@@ -1,7 +1,6 @@
-package ir.ac.kntu.user;
+package ir.ac.kntu.model;
 
-import ir.ac.kntu.data.Database;
-import ir.ac.kntu.game.Game;
+import ir.ac.kntu.database.Database;
 import ir.ac.kntu.utility.ErrorType;
 import ir.ac.kntu.utility.Trie;
 

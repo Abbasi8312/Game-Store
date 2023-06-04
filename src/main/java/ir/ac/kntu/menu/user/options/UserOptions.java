@@ -5,7 +5,7 @@ import ir.ac.kntu.menu.user.friends.FriendsMenu;
 import ir.ac.kntu.menu.user.game.NextMenu;
 import ir.ac.kntu.menu.user.game.SelectGame;
 import ir.ac.kntu.menu.user.profile.ProfileMenu;
-import ir.ac.kntu.user.User;
+import ir.ac.kntu.model.User;
 import ir.ac.kntu.utility.ConsoleCommand;
 
 public class UserOptions extends UserMenu {

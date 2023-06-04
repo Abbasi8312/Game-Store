@@ -1,7 +1,7 @@
 package ir.ac.kntu.menu.user.profile;
 
 import ir.ac.kntu.menu.user.UserMenu;
-import ir.ac.kntu.user.User;
+import ir.ac.kntu.model.User;
 import ir.ac.kntu.utility.ConsoleCommand;
 
 public class ProfileMenu extends UserMenu {

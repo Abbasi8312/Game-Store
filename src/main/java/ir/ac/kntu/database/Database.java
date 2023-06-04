@@ -1,8 +1,8 @@
-package ir.ac.kntu.data;
+package ir.ac.kntu.database;
 
-import ir.ac.kntu.game.Game;
-import ir.ac.kntu.user.Admin;
-import ir.ac.kntu.user.User;
+import ir.ac.kntu.model.Game;
+import ir.ac.kntu.model.Admin;
+import ir.ac.kntu.model.User;
 import ir.ac.kntu.utility.Trie;
 
 import java.util.ArrayList;
