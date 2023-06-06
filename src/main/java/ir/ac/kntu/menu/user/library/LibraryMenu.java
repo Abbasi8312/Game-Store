@@ -2,11 +2,11 @@ package ir.ac.kntu.menu.user.library;
 
 import ir.ac.kntu.model.Game;
 import ir.ac.kntu.menu.user.UserMenu;
-import ir.ac.kntu.model.User;
+import ir.ac.kntu.model.User2;
 import ir.ac.kntu.utility.ConsoleCommand;
 
 public class LibraryMenu extends UserMenu {
-    public LibraryMenu(User user) {
+    public LibraryMenu(User2 user) {
         super();
         currentUser = user;
     }

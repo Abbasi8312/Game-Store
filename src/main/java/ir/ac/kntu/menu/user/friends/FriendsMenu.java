@@ -2,14 +2,14 @@ package ir.ac.kntu.menu.user.friends;
 
 import ir.ac.kntu.menu.user.UserMenu;
 import ir.ac.kntu.menu.user.game.SelectGame;
-import ir.ac.kntu.model.User;
+import ir.ac.kntu.model.User2;
 import ir.ac.kntu.utility.ConsoleCommand;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class FriendsMenu extends UserMenu {
-    public FriendsMenu(User user) {
+    public FriendsMenu(User2 user) {
         super();
         currentUser = user;
     }
@@ -47,7 +47,7 @@ public class FriendsMenu extends UserMenu {
         getInput();
         ConsoleCommand.clearScreen();
         while (canContinue()) {
-            User user = database.findUserByUsername(input);
+            User2 user = DB.findUserByUsername(input);
             if (user == null) {
                 System.out.println("This username doesn't exist");
             } else if (user.equals(currentUser)) {
@@ -85,7 +85,7 @@ public class FriendsMenu extends UserMenu {
         selectUser(new ArrayList<>(currentUser.getPendingRequests()), NextMenu.REQUEST);
     }
 
-    public void answerRequest(User user) {
+    public void answerRequest(User2 user) {
         System.out.println("1. Accept");
         System.out.println("2. Decline");
         getInput();
@@ -109,7 +109,7 @@ public class FriendsMenu extends UserMenu {
         }
     }
 
-    public void selectUser(List<User> users, NextMenu nextMenu) {
+    public void selectUser(List<User2> users, NextMenu nextMenu) {
         for (int i = 0; i < users.size(); i++) {
             System.out.println(i + 1 + ". Username: " + users.get(i).getUsername());
         }

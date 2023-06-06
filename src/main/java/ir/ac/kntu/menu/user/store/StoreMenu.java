@@ -2,12 +2,12 @@ package ir.ac.kntu.menu.user.store;
 
 import ir.ac.kntu.model.Game;
 import ir.ac.kntu.menu.user.UserMenu;
-import ir.ac.kntu.model.User;
+import ir.ac.kntu.model.User2;
 import ir.ac.kntu.utility.ConsoleCommand;
 import ir.ac.kntu.utility.ErrorType;
 
 public class StoreMenu extends UserMenu {
-    public StoreMenu(User user) {
+    public StoreMenu(User2 user) {
         super();
         currentUser = user;
     }
@@ -50,7 +50,7 @@ public class StoreMenu extends UserMenu {
         getInput();
         ConsoleCommand.clearScreen();
         while (canContinue()) {
-            User user = database.findUserByUsername(input);
+            User2 user = DB.findUserByUsername(input);
             if (user != null) {
                 ErrorType errorType = currentUser.buyGame(game, user);
                 if (errorType == ErrorType.NONE) {

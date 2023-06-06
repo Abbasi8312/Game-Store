@@ -1,17 +1,21 @@
-package ir.ac.kntu.model;
+package ir.ac.kntu.model.role;
 
-import ir.ac.kntu.database.Database;
+import ir.ac.kntu.database.DB;
+import ir.ac.kntu.model.Account;
+import ir.ac.kntu.model.Game;
 import ir.ac.kntu.utility.ErrorType;
 import ir.ac.kntu.utility.Trie;
 
 import java.util.*;
 
 public class User {
+    private final Account account;
+
     private final Trie gameTrie;
 
     private final Trie friendTrie;
 
-    private final Database database;
+    private final DB db;
 
     private final Map<String, User> friends;
 
@@ -21,118 +25,18 @@ public class User {
 
     private final List<Game> games;
 
-    private String username;
-
-    private String phoneNumber;
-
-    private String email;
-
-    private String password;
-
     private double walletBalance;
 
-    public User() {
-        database = Database.getDatabase();
-        walletBalance = 0;
-        games = new ArrayList<>();
-        friends = new HashMap<>();
-        pendingRequests = new HashSet<>();
+    public User(Account account) {
+        this.account = account;
         gameTrie = new Trie();
         friendTrie = new Trie();
-        friendList = new ArrayList<>();
-    }
-
-    public User(String username, String password, String email, String phoneNumber) {
-        database = Database.getDatabase();
-        if (setUsername(username) != ErrorType.NONE) {
-            this.username = null;
-        }
-        if (!setPassword(password)) {
-            this.username = null;
-        }
-        if (setEmail(email) != ErrorType.NONE) {
-            this.username = null;
-        }
-        if (setPhoneNumber(phoneNumber) != ErrorType.NONE) {
-            this.username = null;
-        }
-        walletBalance = 0;
-        games = new ArrayList<>();
+        db = new DB();
         friends = new HashMap<>();
-        pendingRequests = new HashSet<>();
-        gameTrie = new Trie();
-        friendTrie = new Trie();
         friendList = new ArrayList<>();
-    }
-
-    public boolean canLogin(String password) {
-        return password.equals(this.password);
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public ErrorType setUsername(String username) {
-        if (database.findUserByUsername(username) != null) {
-            return ErrorType.INDISTINCT;
-        } else if (username.matches("^[A-Za-z][A-Za-z0-9 _-]*$")) {
-            database.changeUsername(this.username, username);
-            this.username = username;
-            return ErrorType.NONE;
-        } else {
-            return ErrorType.NON_MATCHING;
-        }
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public ErrorType setPhoneNumber(String phoneNumber) {
-        if (database.findUserByPhoneNumber(phoneNumber) != null) {
-            return ErrorType.INDISTINCT;
-        } else if (phoneNumber.matches("^\\+?\\d+$")) {
-            database.changePhoneNumber(this.phoneNumber, phoneNumber);
-            this.phoneNumber = phoneNumber;
-            return ErrorType.NONE;
-        } else {
-            return ErrorType.NON_MATCHING;
-        }
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public ErrorType setEmail(String email) {
-        if (database.findUserByEmail(email) != null) {
-            return ErrorType.INDISTINCT;
-        } else if (email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")) {
-            database.changeEmail(this.email, email);
-            this.email = email;
-            return ErrorType.NONE;
-        } else {
-            return ErrorType.NON_MATCHING;
-        }
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public boolean setPassword(String password) {
-        if (password.matches(".*[a-z].*")) {
-            if (password.matches(".*[A-Z].*")) {
-                if (password.matches(".*[0-9].*")) {
-                    if (password.length() >= 8) {
-                        this.password = password;
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
+        pendingRequests = new HashSet<>();
+        games = new ArrayList<>();
+        walletBalance = 0;
     }
 
     public double getWalletBalance() {
@@ -223,9 +127,9 @@ public class User {
     }
 
     private void addFriend(User user) {
-        friends.put(user.getUsername(), user);
+        friends.put(user.account.getName(), user);
         friendList.add(user);
-        friendTrie.insert(user.getUsername(), friendList.size() - 1);
+        friendTrie.insert(user.account.getName(), friendList.size() - 1);
     }
 
     public List<User> filterFriendsByName(String string) {
@@ -238,8 +142,8 @@ public class User {
     }
 
     public void removeFriend(User user) {
-        friends.remove(user.getUsername());
-        friendTrie.remove(user.getUsername(), friendList.indexOf(user));
+        friends.remove(user.account.getName());
+        friendTrie.remove(user.account.getName(), friendList.indexOf(user));
         friendList.remove(user);
     }
 
@@ -274,8 +178,26 @@ public class User {
         removePendingRequest(user);
     }
 
+    @Override public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        User user = (User) o;
+        return Double.compare(user.walletBalance, walletBalance) == 0 && Objects.equals(gameTrie, user.gameTrie) &&
+                Objects.equals(friendTrie, user.friendTrie) && Objects.equals(db, user.db) &&
+                Objects.equals(friends, user.friends) && Objects.equals(friendList, user.friendList) &&
+                Objects.equals(pendingRequests, user.pendingRequests) && Objects.equals(games, user.games);
+    }
+
+    @Override public int hashCode() {
+        return Objects.hash(gameTrie, friendTrie, db, friends, friendList, pendingRequests, games, walletBalance);
+    }
+
     @Override public String toString() {
-        return String.format("Username: %s\nEmail address: %s\nPhone number: %s\nWallet balance: %f", username, email,
-                phoneNumber, walletBalance);
+        return "User{" + "friends=" + friends + ", friendList=" + friendList + ", pendingRequests=" + pendingRequests +
+                ", games=" + games + ", walletBalance=" + walletBalance + '}';
     }
 }

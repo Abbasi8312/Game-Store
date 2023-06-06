@@ -3,6 +3,7 @@ package ir.ac.kntu.utility;
 import java.util.*;
 
 public class Trie {
+
     private final TrieNode root = new TrieNode();
 
     private static char changeCase(char c) {

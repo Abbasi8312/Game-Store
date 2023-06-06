@@ -1,6 +1,6 @@
 package ir.ac.kntu.model;
 
-public enum Genre {
+public enum GameGenre {
     ACTION,
     ADVENTURE,
     ROLE_PLAYING,
@@ -16,10 +16,10 @@ public enum Genre {
     RACING,
     PLATFORMER;
 
-    public static Genre find(String string) {
-        for (Genre genre : values()) {
-            if (string.equalsIgnoreCase(genre.name())) {
-                return genre;
+    public static GameGenre find(String string) {
+        for (GameGenre gameGenre : values()) {
+            if (string.equalsIgnoreCase(gameGenre.name())) {
+                return gameGenre;
             }
         }
         return null;

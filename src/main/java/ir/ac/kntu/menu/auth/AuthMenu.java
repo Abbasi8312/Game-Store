@@ -4,7 +4,7 @@ import ir.ac.kntu.menu.Menu;
 import ir.ac.kntu.menu.admin.options.AdminOptions;
 import ir.ac.kntu.menu.user.options.UserOptions;
 import ir.ac.kntu.model.Admin;
-import ir.ac.kntu.model.User;
+import ir.ac.kntu.model.User2;
 
 import static ir.ac.kntu.utility.ConsoleCommand.clearScreen;
 
@@ -66,8 +66,8 @@ public class AuthMenu extends Menu {
         getInput();
         clearScreen();
         while (canContinue()) {
-            if (input.equals(database.getAdmin().getUserName())) {
-                adminLoginPassword(database.getAdmin());
+            if (input.equals(DB.getAdmin().getUserName())) {
+                adminLoginPassword(DB.getAdmin());
             } else {
                 adminLoginPassword(null);
             }
@@ -98,7 +98,7 @@ public class AuthMenu extends Menu {
         getInput();
         clearScreen();
         while (canContinue()) {
-            User user = database.findUserByUsername(input);
+            User2 user = DB.findUserByUsername(input);
             userLoginPassword(user);
             if (!loggedOut) {
                 System.out.println("Enter username:");
@@ -108,7 +108,7 @@ public class AuthMenu extends Menu {
         }
     }
 
-    public void userLoginPassword(User user) {
+    public void userLoginPassword(User2 user) {
         System.out.println("Enter password:");
         getInput();
         clearScreen();
@@ -123,7 +123,7 @@ public class AuthMenu extends Menu {
     }
 
     public void userSignUpUsername(boolean login) {
-        User user = new User();
+        User2 user = new User2();
         System.out.println("Sign up:");
         System.out.println("Enter username:");
         getInput();
@@ -144,7 +144,7 @@ public class AuthMenu extends Menu {
         }
     }
 
-    public void userSignUpPassword(User user, boolean login) {
+    public void userSignUpPassword(User2 user, boolean login) {
         System.out.println("Enter password:");
         getInput();
         clearScreen();
@@ -163,7 +163,7 @@ public class AuthMenu extends Menu {
         }
     }
 
-    public void userSignUpEmail(User user, boolean login) {
+    public void userSignUpEmail(User2 user, boolean login) {
         System.out.println("Enter email address:");
         getInput();
         clearScreen();
@@ -181,14 +181,14 @@ public class AuthMenu extends Menu {
         }
     }
 
-    public void userSignUpPhoneNumber(User user, boolean login) {
+    public void userSignUpPhoneNumber(User2 user, boolean login) {
         System.out.println("Enter phone number:");
         getInput();
         clearScreen();
         while (canContinue()) {
             switch (user.setPhoneNumber(input)) {
                 case NONE -> {
-                    database.addUser(user);
+                    DB.addUser(user);
                     if (login) {
                         new UserOptions(user).userOptions();
                     }

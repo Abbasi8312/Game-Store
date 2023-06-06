@@ -1,7 +1,7 @@
 package ir.ac.kntu.menu.admin.games;
 
 import ir.ac.kntu.model.Game;
-import ir.ac.kntu.model.Genre;
+import ir.ac.kntu.model.GameGenre;
 import ir.ac.kntu.menu.admin.AdminMenu;
 import ir.ac.kntu.menu.user.game.NextMenu;
 import ir.ac.kntu.menu.user.game.SelectGame;
@@ -20,7 +20,7 @@ public class AdminGameMenu extends AdminMenu {
         while (canContinue()) {
             switch (input) {
                 case "1" -> createGame();
-                case "2" -> new SelectGame(NextMenu.ADMIN, null, database.getAllGames()).store();
+                case "2" -> new SelectGame(NextMenu.ADMIN, null, DB.getAllGames()).store();
                 default -> System.out.println("Invalid input");
             }
             back = false;
@@ -87,14 +87,14 @@ public class AdminGameMenu extends AdminMenu {
 
     public void newGameGenre(Game game) {
         System.out.println("Enter a Genre for the game");
-        System.out.println("All Genres: " + Arrays.toString(Genre.values()));
+        System.out.println("All Genres: " + Arrays.toString(GameGenre.values()));
         getInput();
         ConsoleCommand.clearScreen();
         while (canContinue()) {
-            Genre genre = Genre.find(input);
-            if (genre != null) {
-                game.setGenre(genre);
-                database.addGame(game);
+            GameGenre gameGenre = GameGenre.find(input);
+            if (gameGenre != null) {
+                game.setGenre(gameGenre);
+                DB.addGame(game);
                 System.out.println("Game created successfully");
                 back = true;
             } else {
@@ -102,7 +102,7 @@ public class AdminGameMenu extends AdminMenu {
             }
             if (!back) {
                 System.out.println("Enter a Genre for the game");
-                System.out.println("All Genres: " + Arrays.toString(Genre.values()));
+                System.out.println("All Genres: " + Arrays.toString(GameGenre.values()));
                 getInput();
                 ConsoleCommand.clearScreen();
             }
@@ -192,13 +192,13 @@ public class AdminGameMenu extends AdminMenu {
 
     public void changeGameGenre(Game game) {
         System.out.println("Enter a new Genre for the game (Original genre: " + game.getGenre() + ")");
-        System.out.println("All Genres: " + Arrays.toString(Genre.values()));
+        System.out.println("All Genres: " + Arrays.toString(GameGenre.values()));
         getInput();
         ConsoleCommand.clearScreen();
         while (canContinue()) {
-            Genre genre = Genre.find(input);
-            if (genre != null) {
-                game.setGenre(genre);
+            GameGenre gameGenre = GameGenre.find(input);
+            if (gameGenre != null) {
+                game.setGenre(gameGenre);
                 System.out.println("Genre changed successfully");
                 break;
             } else {
@@ -206,7 +206,7 @@ public class AdminGameMenu extends AdminMenu {
             }
             if (!back) {
                 System.out.println("Enter a Genre for the game");
-                System.out.println("All Genres: " + Arrays.toString(Genre.values()));
+                System.out.println("All Genres: " + Arrays.toString(GameGenre.values()));
                 getInput();
                 ConsoleCommand.clearScreen();
             }
@@ -220,7 +220,7 @@ public class AdminGameMenu extends AdminMenu {
         ConsoleCommand.clearScreen();
         while (canContinue()) {
             if (input.equals("1")) {
-                database.removeGame(game);
+                DB.removeGame(game);
                 System.out.println("Game deleted successfully");
                 back = true;
             } else {

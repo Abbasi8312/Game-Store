@@ -3,7 +3,7 @@ package ir.ac.kntu.menu.admin.users;
 import ir.ac.kntu.menu.admin.AdminMenu;
 import ir.ac.kntu.menu.auth.AuthMenu;
 import ir.ac.kntu.menu.user.profile.ProfileMenu;
-import ir.ac.kntu.model.User;
+import ir.ac.kntu.model.User2;
 import ir.ac.kntu.utility.ConsoleCommand;
 
 public class AdminUserMenu extends AdminMenu {
@@ -56,7 +56,7 @@ public class AdminUserMenu extends AdminMenu {
         getInput();
         ConsoleCommand.clearScreen();
         while (canContinue()) {
-            User user = database.findUserByUsername(input);
+            User2 user = DB.findUserByUsername(input);
             if (user != null) {
                 modifyUserOptions(user);
             } else {
@@ -75,7 +75,7 @@ public class AdminUserMenu extends AdminMenu {
         getInput();
         ConsoleCommand.clearScreen();
         while (canContinue()) {
-            User user = database.findUserByPhoneNumber(input);
+            User2 user = DB.findUserByPhoneNumber(input);
             if (user != null) {
                 modifyUserOptions(user);
             } else {
@@ -94,7 +94,7 @@ public class AdminUserMenu extends AdminMenu {
         getInput();
         ConsoleCommand.clearScreen();
         while (canContinue()) {
-            User user = database.findUserByEmail(input);
+            User2 user = DB.findUserByEmail(input);
             if (user != null) {
                 modifyUserOptions(user);
             } else {
@@ -108,7 +108,7 @@ public class AdminUserMenu extends AdminMenu {
         }
     }
 
-    public void modifyUserOptions(User user) {
+    public void modifyUserOptions(User2 user) {
         System.out.println("1. Show user profile");
         System.out.println("2. Change user profile");
         System.out.println("3. Change user wallet balance");
@@ -135,7 +135,7 @@ public class AdminUserMenu extends AdminMenu {
         back = true;
     }
 
-    public void showUserProfile(User user) {
+    public void showUserProfile(User2 user) {
         System.out.println(user);
         getInput();
         ConsoleCommand.clearScreen();
@@ -146,7 +146,7 @@ public class AdminUserMenu extends AdminMenu {
         }
     }
 
-    public void changeUserWallet(User user) {
+    public void changeUserWallet(User2 user) {
         System.out.println("Enter a new wallet balance for this account");
         getInput();
         ConsoleCommand.clearScreen();
@@ -163,14 +163,14 @@ public class AdminUserMenu extends AdminMenu {
         }
     }
 
-    public void deleteUser(User user) {
+    public void deleteUser(User2 user) {
         System.out.println("Are you sure you want to delete " + user.getUsername() + "?");
         System.out.println("1. Yes");
         getInput();
         ConsoleCommand.clearScreen();
         while (canContinue()) {
             if (input.equals("1")) {
-                database.removeUser(user);
+                DB.removeUser(user);
                 back = true;
                 break;
             } else {

@@ -5,7 +5,7 @@ import ir.ac.kntu.menu.admin.games.AdminGameMenu;
 import ir.ac.kntu.menu.user.UserMenu;
 import ir.ac.kntu.menu.user.library.LibraryMenu;
 import ir.ac.kntu.menu.user.store.StoreMenu;
-import ir.ac.kntu.model.User;
+import ir.ac.kntu.model.User2;
 import ir.ac.kntu.utility.ConsoleCommand;
 
 import java.util.List;
@@ -17,7 +17,7 @@ public class SelectGame extends UserMenu {
 
     private boolean back = false;
 
-    public SelectGame(NextMenu nextMenu, User user, List<Game> games) {
+    public SelectGame(NextMenu nextMenu, User2 user, List<Game> games) {
         super();
         this.nextMenu = nextMenu;
         currentUser = user;
@@ -61,7 +61,7 @@ public class SelectGame extends UserMenu {
             if (input.matches("^[0-9]+(\\.[0-9]+)?\\s+[0-9]+(\\.[0-9]+)?$")) {
                 List<Game> games;
                 if (nextMenu == NextMenu.STORE || nextMenu == NextMenu.ADMIN) {
-                    games = database.filterGameByPrice(Double.parseDouble(input.split(" ")[0]),
+                    games = DB.filterGameByPrice(Double.parseDouble(input.split(" ")[0]),
                             Double.parseDouble(input.split(" ")[1]));
                 } else {
                     games = currentUser.filterGameByPrice(Double.parseDouble(input.split(" ")[0]),
@@ -129,7 +129,7 @@ public class SelectGame extends UserMenu {
         while (canContinue()) {
             List<Game> games;
             if (nextMenu == NextMenu.STORE || nextMenu == NextMenu.ADMIN) {
-                games = database.filterGameByName(input);
+                games = DB.filterGameByName(input);
             } else {
                 games = currentUser.filterGameByName(input);
             }

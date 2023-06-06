@@ -1,13 +1,13 @@
 package ir.ac.kntu.menu.user.profile;
 
 import ir.ac.kntu.menu.user.UserMenu;
-import ir.ac.kntu.model.User;
+import ir.ac.kntu.model.User2;
 import ir.ac.kntu.utility.ConsoleCommand;
 
 public class ProfileMenu extends UserMenu {
     private boolean changedProfile;
 
-    public ProfileMenu(User user) {
+    public ProfileMenu(User2 user) {
         super();
         currentUser = user;
     }
