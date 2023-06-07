@@ -1,26 +1,33 @@
 package ir.ac.kntu.model;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import ir.ac.kntu.model.role.GameDeveloper;
+
+import java.util.*;
 
 public class Game extends Product {
     private final Map<String, Double> rates;
+
+    private final Set<GameDeveloper> gameDevelopers;
 
     private GameGenre gameGenre;
 
     private double rating;
 
-    public Game(String name, double price, String description) {
+    private int level;
+
+    public Game(String name, double price, String description, int level) {
         super(name, price, description);
         rating = 0;
         rates = new HashMap<>();
+        gameDevelopers = new HashSet<>();
+        this.level = level;
     }
 
     public Game() {
         super();
         rating = 0;
         rates = new HashMap<>();
+        gameDevelopers = new HashSet<>();
     }
 
     public double getRating() {
@@ -79,5 +86,25 @@ public class Game extends Product {
     @Override public String toString() {
         return super.toString() + "\nGame{" + "rates=" + rates + ", gameGenre=" + gameGenre + ", rating=" + rating +
                 '}';
+    }
+
+    public List<GameDeveloper> getGameDevelopers() {
+        return new ArrayList<>(gameDevelopers);
+    }
+
+    public void addGameDeveloper(GameDeveloper gameDeveloper) {
+        gameDevelopers.add(gameDeveloper);
+    }
+
+    public void removeGameDeveloper(GameDeveloper gameDeveloper) {
+        gameDevelopers.remove(gameDeveloper);
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
     }
 }
