@@ -8,11 +8,10 @@ public class Game extends Product {
     private final Map<String, Double> rates;
 
     private final Set<GameDeveloper> gameDevelopers;
-
+    private final Map<String, String> feedbacks;
+    private GameStatus gameStatus;
     private GameGenre gameGenre;
-
     private double rating;
-
     private int level;
 
     public Game(String name, double price, String description, int level) {
@@ -21,6 +20,8 @@ public class Game extends Product {
         rates = new HashMap<>();
         gameDevelopers = new HashSet<>();
         this.level = level;
+        gameStatus = GameStatus.NORMAL;
+        feedbacks = new HashMap<>();
     }
 
     public Game() {
@@ -28,6 +29,7 @@ public class Game extends Product {
         rating = 0;
         rates = new HashMap<>();
         gameDevelopers = new HashSet<>();
+        feedbacks = new HashMap<>();
     }
 
     public double getRating() {
@@ -64,6 +66,50 @@ public class Game extends Product {
         this.gameGenre = gameGenre;
     }
 
+    public List<GameDeveloper> getGameDevelopers() {
+        return new ArrayList<>(gameDevelopers);
+    }
+
+    public void addGameDeveloper(GameDeveloper gameDeveloper) {
+        gameDevelopers.add(gameDeveloper);
+    }
+
+    public void removeGameDeveloper(GameDeveloper gameDeveloper) {
+        gameDevelopers.remove(gameDeveloper);
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public GameStatus getGameStatus() {
+        return gameStatus;
+    }
+
+    public void setGameStatus(GameStatus gameStatus) {
+        this.gameStatus = gameStatus;
+    }
+
+    public Map<String, String> getFeedbacks() {
+        return new HashMap<>(feedbacks);
+    }
+
+    public String getFeedback(String name) {
+        return feedbacks.get(name);
+    }
+
+    public void addFeedback(String name, String review) {
+        feedbacks.put(name, review);
+    }
+
+    public void removeFeedback(String name) {
+        feedbacks.remove(name);
+    }
+
     @Override public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -86,25 +132,5 @@ public class Game extends Product {
     @Override public String toString() {
         return super.toString() + "\nGame{" + "rates=" + rates + ", gameGenre=" + gameGenre + ", rating=" + rating +
                 '}';
-    }
-
-    public List<GameDeveloper> getGameDevelopers() {
-        return new ArrayList<>(gameDevelopers);
-    }
-
-    public void addGameDeveloper(GameDeveloper gameDeveloper) {
-        gameDevelopers.add(gameDeveloper);
-    }
-
-    public void removeGameDeveloper(GameDeveloper gameDeveloper) {
-        gameDevelopers.remove(gameDeveloper);
-    }
-
-    public int getLevel() {
-        return level;
-    }
-
-    public void setLevel(int level) {
-        this.level = level;
     }
 }
