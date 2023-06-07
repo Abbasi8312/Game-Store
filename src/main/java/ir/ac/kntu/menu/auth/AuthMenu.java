@@ -3,6 +3,7 @@ package ir.ac.kntu.menu.auth;
 import ir.ac.kntu.database.DB;
 import ir.ac.kntu.menu.Menu;
 import ir.ac.kntu.menu.admin.options.AdminOptions;
+import ir.ac.kntu.menu.developer.options.DeveloperOptions;
 import ir.ac.kntu.menu.user.options.UserOptions;
 import ir.ac.kntu.model.Account;
 import ir.ac.kntu.model.role.Role;
@@ -61,6 +62,7 @@ public class AuthMenu extends Menu {
                 account.user.logout();
             }
             case GAME_DEVELOPER -> {
+                new DeveloperOptions(db, account.gameDeveloper).developerOptions();
             }
             case ACCESSORY_SELLER -> {
             }
