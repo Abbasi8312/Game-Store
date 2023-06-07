@@ -1,15 +1,20 @@
 package ir.ac.kntu.model.role;
 
 import ir.ac.kntu.database.DB;
+import ir.ac.kntu.model.Accessory;
 import ir.ac.kntu.model.Account;
 import ir.ac.kntu.model.Game;
 import ir.ac.kntu.model.Product;
 import ir.ac.kntu.utility.ErrorType;
 import ir.ac.kntu.utility.Trie;
 
+import java.time.Duration;
+import java.time.LocalTime;
 import java.util.*;
 
 public class User {
+    private static final double POINT_REFRESH_RATE_PER_SECOND = 5;
+
     public final Account account;
 
     private final Trie productTrie;
@@ -28,6 +33,10 @@ public class User {
 
     private double walletBalance;
 
+    private double points;
+
+    private LocalTime startTime;
+
     public User(Account account) {
         this.account = account;
         productTrie = new Trie();
@@ -38,6 +47,7 @@ public class User {
         pendingRequests = new HashSet<>();
         products = new ArrayList<>();
         walletBalance = 0;
+        points = 0;
     }
 
     public double getWalletBalance() {
@@ -67,25 +77,69 @@ public class User {
         productTrie.insert(product.getName(), products.size() - 1);
     }
 
-    public boolean buyProduct(Product product) {
-        if (walletBalance >= product.getPrice()) {
-            walletBalance -= product.getPrice();
-            addProduct(product);
-            return true;
+    private boolean checkLevel(Product product, User user) {
+        if (product instanceof Game game) {
+            double points;
+            switch (game.getLevel()) {
+                case 2 -> points = 20;
+                case 3 -> points = 50;
+                case 4 -> points = 100;
+                default -> points = 0;
+            }
+            return user.points >= points;
         }
-        return false;
+        return true;
+    }
+
+    private double applyDiscount() {
+        if (points < 20) {
+            return 1;
+        }
+        if (points < 50) {
+            return 0.9;
+        }
+        if (points < 100) {
+            return 0.8;
+        }
+        return 0.7;
+    }
+
+    public ErrorType buyProduct(Product product) {
+        if (!checkLevel(product, this)) {
+            return ErrorType.LOW_POINTS;
+        }
+        if (walletBalance >= product.getPrice()) {
+            if (product instanceof Accessory && ((Accessory) product).getCount() > 0) {
+                ((Accessory) product).setCount(((Accessory) product).getCount() - 1);
+            } else if (product instanceof Accessory) {
+                return ErrorType.ZERO_STOCK_COUNT;
+            } else if (hasProduct(product)) {
+                return ErrorType.ALREADY_HAS_GAME;
+            }
+            walletBalance -= product.getPrice() * applyDiscount();
+            addProduct(product);
+            return ErrorType.NONE;
+        }
+        return ErrorType.NOT_ENOUGH_BALANCE;
     }
 
     public ErrorType buyProduct(Product product, User user) {
-        if (user.hasProduct(product)) {
-            return ErrorType.ALREADY_HAS_GAME;
-        } else if (walletBalance >= product.getPrice()) {
-            walletBalance -= product.getPrice();
+        if (!checkLevel(product, user)) {
+            return ErrorType.LOW_POINTS;
+        }
+        if (walletBalance >= product.getPrice()) {
+            if (product instanceof Accessory && ((Accessory) product).getCount() > 0) {
+                ((Accessory) product).setCount(((Accessory) product).getCount() - 1);
+            } else if (product instanceof Accessory) {
+                return ErrorType.ZERO_STOCK_COUNT;
+            } else if (user.hasProduct(product)) {
+                return ErrorType.ALREADY_HAS_GAME;
+            }
+            walletBalance -= product.getPrice() * applyDiscount();
             user.addProduct(product);
             return ErrorType.NONE;
-        } else {
-            return ErrorType.NOT_ENOUGH_BALANCE;
         }
+        return ErrorType.NOT_ENOUGH_BALANCE;
     }
 
     public boolean hasProduct(Product product) {
@@ -178,6 +232,14 @@ public class User {
         removePendingRequest(user);
     }
 
+    public void login() {
+        startTime = LocalTime.now();
+    }
+
+    public void logout() {
+        points += Duration.between(startTime, LocalTime.now()).getSeconds() / POINT_REFRESH_RATE_PER_SECOND;
+    }
+
     @Override public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -198,8 +260,15 @@ public class User {
     }
 
     @Override public String toString() {
-        return account.toString() + "\nUser{" + "friends=" + friends + ", friendList=" + friendList +
-                ", pendingRequests=" + pendingRequests + ", games=" + products + ", walletBalance=" + walletBalance +
-                '}';
+        return "User{" + "account=" + account + ", friendList=" + friendList + ", pendingRequests=" + pendingRequests +
+                ", products=" + products + ", walletBalance=" + walletBalance + ", points=" + points + '}';
+    }
+
+    public double getPoints() {
+        return points;
+    }
+
+    public void setPoints(double points) {
+        this.points = points;
     }
 }
