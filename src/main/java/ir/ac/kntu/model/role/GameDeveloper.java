@@ -10,9 +10,15 @@ public class GameDeveloper {
 
     private final Set<Game> games;
 
+    private final List<Game> scheduledEvents;
+
+    private final List<Game> inbox;
+
     public GameDeveloper(Account account) {
         this.account = account;
         games = new HashSet<>();
+        scheduledEvents = new ArrayList<>();
+        inbox = new ArrayList<>();
     }
 
     public List<Game> getGames() {
@@ -35,6 +41,30 @@ public class GameDeveloper {
             }
         }
         return false;
+    }
+
+    public List<Game> getScheduledEvents() {
+        return new ArrayList<>(scheduledEvents);
+    }
+
+    public void addScheduledEvent(Game game) {
+        scheduledEvents.add(game);
+    }
+
+    public void removeScheduledEvent(Game game) {
+        scheduledEvents.remove(game);
+    }
+
+    public List<Game> getInbox() {
+        return new ArrayList<>(scheduledEvents);
+    }
+
+    public void addToInbox(Game game) {
+        inbox.add(game);
+    }
+
+    public void removeFromInbox(Game game) {
+        inbox.remove(game);
     }
 
     @Override public String toString() {
