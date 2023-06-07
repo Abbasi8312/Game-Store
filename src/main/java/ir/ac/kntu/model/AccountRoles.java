@@ -18,8 +18,8 @@ public abstract class AccountRoles {
 
     public AccountRoles() {
         user = new User((Account) this);
-        accessorySeller = new AccessorySeller();
-        gameDeveloper = new GameDeveloper();
+        accessorySeller = new AccessorySeller((Account) this);
+        gameDeveloper = new GameDeveloper((Account) this);
         admin = new Admin((Account) this);
         roles = new HashSet<>();
     }
