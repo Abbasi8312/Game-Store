@@ -23,10 +23,13 @@ public class StoreMenu extends UserMenu {
         clearScreen();
         while (canContinue()) {
             if (canAddGame && input.equals("1")) {
-                if (currentUser.buyProduct(product)) {
+                ErrorType errorType = currentUser.buyProduct(product);
+                if (errorType == ErrorType.NONE) {
                     System.out.println(product.getName() + " is added to your library");
-                } else {
+                } else if (errorType == ErrorType.NOT_ENOUGH_BALANCE) {
                     System.out.println("You don't have enough balance in your wallet to buy this product");
+                } else if (errorType == ErrorType.LOW_POINTS) {
+                    System.out.println("You don't have enough points to buy this game");
                 }
                 break;
             } else if (input.equals("2")) {
