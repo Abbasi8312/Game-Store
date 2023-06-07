@@ -8,10 +8,15 @@ public class Game extends Product {
     private final Map<String, Double> rates;
 
     private final Set<GameDeveloper> gameDevelopers;
+
     private final Map<String, String> feedbacks;
+
     private GameStatus gameStatus;
+
     private GameGenre gameGenre;
+
     private double rating;
+
     private int level;
 
     public Game(String name, double price, String description, int level) {

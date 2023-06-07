@@ -4,6 +4,7 @@ import ir.ac.kntu.database.DB;
 import ir.ac.kntu.menu.Menu;
 import ir.ac.kntu.menu.admin.options.AdminOptions;
 import ir.ac.kntu.menu.developer.options.DeveloperOptions;
+import ir.ac.kntu.menu.seller.options.SellerOptions;
 import ir.ac.kntu.menu.user.options.UserOptions;
 import ir.ac.kntu.model.Account;
 import ir.ac.kntu.model.role.Role;
@@ -62,9 +63,12 @@ public class AuthMenu extends Menu {
                 account.user.logout();
             }
             case GAME_DEVELOPER -> {
+                clearScreen();
                 new DeveloperOptions(db, account.gameDeveloper).developerOptions();
             }
             case ACCESSORY_SELLER -> {
+                clearScreen();
+                new SellerOptions(db, account.accessorySeller).sellerOptions();
             }
             case ADMIN -> {
                 clearScreen();
