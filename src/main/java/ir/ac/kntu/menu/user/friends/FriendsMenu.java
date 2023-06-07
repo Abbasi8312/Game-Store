@@ -2,7 +2,7 @@ package ir.ac.kntu.menu.user.friends;
 
 import ir.ac.kntu.database.DB;
 import ir.ac.kntu.menu.user.UserMenu;
-import ir.ac.kntu.menu.user.product.SelectGame;
+import ir.ac.kntu.menu.user.product.SelectProduct;
 import ir.ac.kntu.model.role.User;
 
 import java.util.ArrayList;
@@ -118,7 +118,7 @@ public class FriendsMenu extends UserMenu {
         while (canContinue()) {
             if (input.matches("^[0-9]+$") && Integer.parseInt(input) > 0 && Integer.parseInt(input) <= users.size()) {
                 if (nextMenu == NextMenu.GAME) {
-                    new SelectGame(db, ir.ac.kntu.menu.user.product.NextMenu.NONE,
+                    new SelectProduct(db, ir.ac.kntu.menu.user.product.NextMenu.NONE,
                             users.get(Integer.parseInt(input) - 1).account,
                             users.get(Integer.parseInt(input) - 1).getProducts()).store();
                 } else {

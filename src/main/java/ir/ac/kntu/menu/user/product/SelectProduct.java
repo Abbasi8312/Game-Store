@@ -1,17 +1,18 @@
 package ir.ac.kntu.menu.user.product;
 
 import ir.ac.kntu.database.DB;
-import ir.ac.kntu.menu.admin.games.AdminGameMenu;
+import ir.ac.kntu.menu.admin.products.AdminProductMenu;
 import ir.ac.kntu.menu.user.UserMenu;
 import ir.ac.kntu.menu.user.library.LibraryMenu;
 import ir.ac.kntu.menu.user.store.StoreMenu;
+import ir.ac.kntu.model.Accessory;
 import ir.ac.kntu.model.Account;
 import ir.ac.kntu.model.Game;
 import ir.ac.kntu.model.Product;
 
 import java.util.List;
 
-public class SelectGame extends UserMenu {
+public class SelectProduct extends UserMenu {
     private final NextMenu nextMenu;
 
     private final List<Product> products;
@@ -20,7 +21,7 @@ public class SelectGame extends UserMenu {
 
     private boolean back = false;
 
-    public SelectGame(DB db, NextMenu nextMenu, Account account, List<Product> games) {
+    public SelectProduct(DB db, NextMenu nextMenu, Account account, List<Product> games) {
         super(db);
         this.nextMenu = nextMenu;
         currentAccount = account;
@@ -29,7 +30,7 @@ public class SelectGame extends UserMenu {
     }
 
     public void store() {
-        System.out.println("1. Display all games");
+        System.out.println("1. Display all products");
         System.out.println("2. Filter by name");
         System.out.println("3. Filter by price");
         getInput();
@@ -42,7 +43,7 @@ public class SelectGame extends UserMenu {
                 default -> System.out.println("Wrong input!");
             }
             if (!back) {
-                System.out.println("1. Display all games");
+                System.out.println("1. Display all products");
                 System.out.println("2. Filter by name");
                 System.out.println("3. Filter by price");
                 getInput();
@@ -83,9 +84,16 @@ public class SelectGame extends UserMenu {
         }
     }
 
+    private String productName(Product product) {
+        if (product instanceof Game) {
+            return "**" + product.getName() + "**";
+        }
+        return "--" + product.getName() + "--";
+    }
+
     private void selectProduct(List<Product> products, Account account) {
         for (int i = 0; i < products.size(); i++) {
-            System.out.println(i + 1 + ". " + products.get(i).getName());
+            System.out.println(i + 1 + ". " + productName(products.get(i)));
         }
         getInput();
         clearScreen();
@@ -96,18 +104,18 @@ public class SelectGame extends UserMenu {
                 switch (nextMenu) {
                     case STORE -> new StoreMenu(db, currentUser).storeProduct(product);
                     case LIBRARY -> {
-                        if (product instanceof Game) {
-                            new LibraryMenu(db, currentUser).gameOptions((Game) product);
-                        }/* else if (product instanceof Accessory) {
-
-                        }*/
+                        if (product instanceof Game game) {
+                            new LibraryMenu(db, currentUser).gameOptions(game);
+                        } else if (product instanceof Accessory accessory) {
+                            new LibraryMenu(db, currentUser).accessoryOptions(accessory);
+                        }
                     }
                     case ADMIN -> {
-                        if (product instanceof Game) {
-                            new AdminGameMenu(db, account.admin).modifyGameOptions((Game) product);
-                        }/* else if (product instanceof Accessory) {
-
-                        }*/
+                        if (product instanceof Game game) {
+                            new AdminProductMenu(db, account.admin).modifyGameOptions(game);
+                        } else if (product instanceof Accessory accessory) {
+                            new AdminProductMenu(db, account.admin).modifyAccessoryOptions(accessory);
+                        }
                         back = true;
                     }
                     default -> showProduct(product);

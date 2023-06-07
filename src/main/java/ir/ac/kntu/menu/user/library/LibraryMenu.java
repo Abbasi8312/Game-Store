@@ -2,6 +2,7 @@ package ir.ac.kntu.menu.user.library;
 
 import ir.ac.kntu.database.DB;
 import ir.ac.kntu.menu.user.UserMenu;
+import ir.ac.kntu.model.Accessory;
 import ir.ac.kntu.model.Game;
 import ir.ac.kntu.model.Product;
 import ir.ac.kntu.model.role.User;
@@ -27,6 +28,24 @@ public class LibraryMenu extends UserMenu {
             System.out.println(game);
             System.out.println("1. Community");
             System.out.println("2. Rate");
+            getInput();
+            clearScreen();
+        }
+    }
+
+    public void accessoryOptions(Accessory accessory) {
+        System.out.println(accessory);
+        System.out.println("1. Community");
+        getInput();
+        clearScreen();
+        while (canContinue()) {
+            if (input.equals("1")) {
+                productCommunity(accessory);
+            } else {
+                System.out.println("Invalid input");
+            }
+            System.out.println(accessory);
+            System.out.println("1. Community");
             getInput();
             clearScreen();
         }

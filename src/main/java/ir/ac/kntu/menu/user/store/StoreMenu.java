@@ -2,6 +2,7 @@ package ir.ac.kntu.menu.user.store;
 
 import ir.ac.kntu.database.DB;
 import ir.ac.kntu.menu.user.UserMenu;
+import ir.ac.kntu.model.Accessory;
 import ir.ac.kntu.model.Product;
 import ir.ac.kntu.model.role.User;
 import ir.ac.kntu.utility.ErrorType;
@@ -15,14 +16,14 @@ public class StoreMenu extends UserMenu {
     public void storeProduct(Product product) {
         System.out.println(product);
         boolean canAddGame = !currentUser.hasProduct(product);
-        if (canAddGame) {
+        if (canAddGame || product instanceof Accessory) {
             System.out.println("1. Buy product");
         }
         System.out.println("2. Gift product");
         getInput();
         clearScreen();
         while (canContinue()) {
-            if (canAddGame && input.equals("1")) {
+            if ((canAddGame || product instanceof Accessory) && input.equals("1")) {
                 ErrorType errorType = currentUser.buyProduct(product);
                 if (errorType == ErrorType.NONE) {
                     System.out.println(product.getName() + " is added to your library");
@@ -39,7 +40,7 @@ public class StoreMenu extends UserMenu {
                 System.out.println("Invalid input!");
             }
             System.out.println(product);
-            if (canAddGame) {
+            if (canAddGame || product instanceof Accessory) {
                 System.out.println("1. Buy product");
             }
             System.out.println("2. Gift product");

@@ -56,6 +56,7 @@ public class AuthMenu extends Menu {
         switch (option) {
             case USER -> {
                 account.user.login();
+                clearScreen();
                 new UserOptions(db, account.user).userOptions();
                 account.user.logout();
             }
@@ -64,6 +65,7 @@ public class AuthMenu extends Menu {
             case ACCESSORY_SELLER -> {
             }
             case ADMIN -> {
+                clearScreen();
                 new AdminOptions(db, account.admin).adminOptions();
             }
             default -> {

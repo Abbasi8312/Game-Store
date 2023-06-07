@@ -7,6 +7,7 @@ import java.util.*;
 
 public class GameDeveloper {
     public final Account account;
+
     private final Set<Game> games;
 
     public GameDeveloper(Account account) {

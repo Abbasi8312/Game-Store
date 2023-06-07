@@ -4,7 +4,7 @@ import ir.ac.kntu.database.DB;
 import ir.ac.kntu.menu.user.UserMenu;
 import ir.ac.kntu.menu.user.friends.FriendsMenu;
 import ir.ac.kntu.menu.user.product.NextMenu;
-import ir.ac.kntu.menu.user.product.SelectGame;
+import ir.ac.kntu.menu.user.product.SelectProduct;
 import ir.ac.kntu.menu.user.profile.ProfileMenu;
 import ir.ac.kntu.model.role.User;
 
@@ -25,10 +25,10 @@ public class UserOptions extends UserMenu {
         while (canContinue()) {
             switch (input) {
                 case "1" -> new ProfileMenu(db, currentUser).profile();
-                case "2" ->
-                        new SelectGame(db, NextMenu.STORE, currentUser.account, db.productsDB.getAllProducts()).store();
+                case "2" -> new SelectProduct(db, NextMenu.STORE, currentUser.account,
+                        db.productsDB.getAllProducts()).store();
                 case "3" ->
-                        new SelectGame(db, NextMenu.LIBRARY, currentUser.account, currentUser.getProducts()).store();
+                        new SelectProduct(db, NextMenu.LIBRARY, currentUser.account, currentUser.getProducts()).store();
                 case "4" -> new FriendsMenu(db, currentUser).friendsOptions();
                 default -> System.out.println("Wrong input!");
             }
