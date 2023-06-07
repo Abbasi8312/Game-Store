@@ -52,6 +52,14 @@ public class AccountsDB {
         accountList.remove(account);
     }
 
+    public Account login(String name, String password) {
+        Account account = findAccountByName(name);
+        if (account != null && account.canLogin(password)) {
+            return account;
+        }
+        return null;
+    }
+
 
     public Account findAccountByName(String name) {
         return accountsByName.get(name);

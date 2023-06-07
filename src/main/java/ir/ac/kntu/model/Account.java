@@ -1,15 +1,11 @@
 package ir.ac.kntu.model;
 
 import ir.ac.kntu.database.DB;
-import ir.ac.kntu.model.role.Role;
 import ir.ac.kntu.utility.ErrorType;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Objects;
 
 public class Account extends AccountRoles{
-    private final Set<Role> roles;
-
     private final DB db;
 
     private String name;
@@ -23,17 +19,15 @@ public class Account extends AccountRoles{
     public Account(DB db) {
         super();
         this.db = db;
-        roles = new HashSet<>();
     }
 
-    public Account(DB db, String name, String phone, String email, String password) {
+    public Account(DB db, String name, String password, String email, String phone) {
         super();
         this.db = db;
         this.name = name;
         this.phone = phone;
         this.email = email;
         this.password = password;
-        roles = new HashSet<>();
     }
 
     public boolean canLogin(String password) {
@@ -60,7 +54,7 @@ public class Account extends AccountRoles{
         return phone;
     }
 
-    public ErrorType setPhoneNumber(String phone) {
+    public ErrorType setPhone(String phone) {
         if (db.accountsDB.findAccountByPhone(phone) != null) {
             return ErrorType.INDISTINCT;
         } else if (phone.matches("^\\+?\\d+$")) {
@@ -106,15 +100,24 @@ public class Account extends AccountRoles{
         return false;
     }
 
-    public Set<Role> getRoles() {
-        return new HashSet<>(roles);
+    @Override public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Account account = (Account) o;
+        return Objects.equals(name, account.name) && Objects.equals(phone, account.phone) &&
+                Objects.equals(email, account.email) && Objects.equals(password, account.password);
     }
 
-    public void addRole(Role role) {
-        roles.add(role);
+    @Override public int hashCode() {
+        return Objects.hash(name, phone, email, password);
     }
 
-    public boolean hasRole(Role role) {
-        return roles.contains(role);
+    @Override public String toString() {
+        return "Account{" + "name='" + name + '\'' + ", phone='" + phone + '\'' + ", email='" + email + '\'' +
+                ", password='" + password + '\'' + '}';
     }
 }

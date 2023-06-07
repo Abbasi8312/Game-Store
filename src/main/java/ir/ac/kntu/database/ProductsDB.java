@@ -23,7 +23,7 @@ public class ProductsDB {
 
     public void addProduct(Product product) {
         productList.add(product);
-        prodcutTrie.insert(product.getName(), product.getReviews().size() - 1);
+        prodcutTrie.insert(product.getName(), productList.size() - 1);
     }
 
     public List<Product> filterProductsByName(String string) {

@@ -1,215 +1,199 @@
 package ir.ac.kntu.menu.auth;
 
+import ir.ac.kntu.database.DB;
 import ir.ac.kntu.menu.Menu;
 import ir.ac.kntu.menu.admin.options.AdminOptions;
 import ir.ac.kntu.menu.user.options.UserOptions;
-import ir.ac.kntu.model.Admin;
-import ir.ac.kntu.model.User2;
-
-import static ir.ac.kntu.utility.ConsoleCommand.clearScreen;
+import ir.ac.kntu.model.Account;
+import ir.ac.kntu.model.role.Role;
+import ir.ac.kntu.utility.ScannerWrapper;
 
 public class AuthMenu extends Menu {
     private boolean loggedOut;
 
-    public AuthMenu() {
+    public AuthMenu(DB db) {
+        super(db);
         loggedOut = false;
     }
 
-    public void mainOptions() {
-        clearScreen();
-        System.out.println("Welcome to Fariborz Game Store!");
-        System.out.println("You can use \"*\" anywhere to go back and \"**\" to exit the program.");
-        System.out.println("1. User");
-        System.out.println("2. Admin");
-        getInput();
-        clearScreen();
-        while (!input.equals("**")) {
-            switch (input) {
-                case "1" -> userOptions();
-                case "2" -> adminLoginUsername();
-                case "*" -> {
+    public void show() {
+        AuthenticationOption option;
+        while ((option = printMenuOptions("Authentication Menu", AuthenticationOption.class)) != null) {
+            switch (option) {
+                case LOGIN -> accountLogin();
+                case REGISTER -> signUpUsername(true);
+                default -> {
                 }
-                default -> System.out.println("Invalid input");
             }
-            System.out.println("Welcome to Fariborz Game Store!");
-            System.out.println("You can use \"*\" anywhere to go back and \"**\" to exit the program.");
-            System.out.println("1. User");
-            System.out.println("2. Admin");
-            getInput();
-            clearScreen();
-            loggedOut = false;
         }
     }
 
-    public void userOptions() {
-        System.out.println("1. Login");
-        System.out.println("2. Sign Up");
-        getInput();
+    private void accountLogin() {
         clearScreen();
-        while (canContinue()) {
-            switch (input) {
-                case "1" -> userLoginUsername();
-                case "2" -> userSignUpUsername(true);
-                default -> System.out.println("Invalid input");
+        System.out.print("Enter username:");
+        String username = ScannerWrapper.nextLine();
+        System.out.print("Enter password:");
+        String password = ScannerWrapper.nextLine();
+        if (db.accountsDB.login(username, password) == null) {
+            System.out.println("Wrong username or password");
+        } else {
+            selectRole(db.accountsDB.login(username, password));
+        }
+    }
+
+    private void selectRole(Account account) {
+        Role option;
+        while ((option = printMenuOptions("Role", Role.class)) != null) {
+            if (!account.hasRole(option)) {
+                System.out.println("You don't have access to this menu");
+                continue;
+            }
+            roleLogin(account, option);
+        }
+    }
+
+    private void roleLogin(Account account, Role option) {
+        switch (option) {
+            case USER -> {
+                new UserOptions(db, account.user).userOptions();
+            }
+            case GAME_DEVELOPER -> {
+            }
+            case ACCESSORY_SELLER -> {
+            }
+            case ADMIN -> {
+                new AdminOptions(db, account.admin).adminOptions();
+            }
+            default -> {
+            }
+        }
+    }
+
+    public void signUpUsername(boolean login) {
+        clearScreen();
+        Account account = new Account(db);
+        System.out.print("Enter username:");
+        String username = ScannerWrapper.nextLine();
+        while (canContinue(username)) {
+            switch (account.setName(username)) {
+                case NONE -> signUpPassword(account, login);
+                case INDISTINCT -> {
+                    clearScreen();
+                    System.out.println("This username is already in use");
+                }
+                default -> {
+                    clearScreen();
+                    System.out.println(
+                            "Username must start with an english letter and can contain letters, numbers, space, '-' " +
+                                    "and " + "'_'");
+                }
             }
             if (!loggedOut) {
-                System.out.println("1. Login");
-                System.out.println("2. Sign Up");
-                getInput();
+                System.out.print("Enter username:");
+                username = ScannerWrapper.nextLine();
                 clearScreen();
             }
         }
     }
 
-    public void adminLoginUsername() {
-        System.out.println("Enter admin username:");
-        getInput();
+    public void signUpPassword(Account account, boolean login) {
         clearScreen();
-        while (canContinue()) {
-            if (input.equals(DB.getAdmin().getUserName())) {
-                adminLoginPassword(DB.getAdmin());
+        System.out.print("Enter password:");
+        String password = ScannerWrapper.nextLine();
+        while (canContinue(password)) {
+            if (account.setPassword(password)) {
+                signUpEmail(account, login);
             } else {
-                adminLoginPassword(null);
-            }
-            if (!loggedOut) {
-                System.out.println("Enter admin username:");
-                getInput();
                 clearScreen();
-            }
-        }
-    }
-
-    public void adminLoginPassword(Admin admin) {
-        System.out.println("Enter admin password:");
-        getInput();
-        clearScreen();
-        while (canContinue()) {
-            if (admin == null || !input.equals(admin.getPassword())) {
-                System.out.println("Username or password is incorrect");
-            } else {
-                new AdminOptions().adminOptions();
-            }
-            loggedOut = true;
-        }
-    }
-
-    public void userLoginUsername() {
-        System.out.println("Enter username:");
-        getInput();
-        clearScreen();
-        while (canContinue()) {
-            User2 user = DB.findUserByUsername(input);
-            userLoginPassword(user);
-            if (!loggedOut) {
-                System.out.println("Enter username:");
-                getInput();
-                clearScreen();
-            }
-        }
-    }
-
-    public void userLoginPassword(User2 user) {
-        System.out.println("Enter password:");
-        getInput();
-        clearScreen();
-        while (canContinue()) {
-            if (user == null || !user.canLogin(input)) {
-                System.out.println("Username or password is incorrect");
-            } else {
-                new UserOptions(user).userOptions();
-            }
-            loggedOut = true;
-        }
-    }
-
-    public void userSignUpUsername(boolean login) {
-        User2 user = new User2();
-        System.out.println("Sign up:");
-        System.out.println("Enter username:");
-        getInput();
-        clearScreen();
-        while (canContinue()) {
-            switch (user.setUsername(input)) {
-                case NONE -> userSignUpPassword(user, login);
-                case INDISTINCT -> System.out.println("This username is already in use");
-                default -> System.out.println(
-                        "Username must start with an english letter and can contain letters, numbers, space, '-' and " +
-                                "'_'");
-            }
-            if (!loggedOut) {
-                System.out.println("Enter username:");
-                getInput();
-                clearScreen();
-            }
-        }
-    }
-
-    public void userSignUpPassword(User2 user, boolean login) {
-        System.out.println("Enter password:");
-        getInput();
-        clearScreen();
-        while (canContinue()) {
-            if (user.setPassword(input)) {
-                userSignUpEmail(user, login);
-            } else {
                 System.out.println("Password must contain at least one lowercase letter, one uppercase letter, one " +
                         "digit, and be at least 8 characters long.");
             }
             if (!loggedOut) {
-                System.out.println("Enter password:");
-                getInput();
+                System.out.print("Enter password:");
+                password = ScannerWrapper.nextLine();
                 clearScreen();
             }
         }
     }
 
-    public void userSignUpEmail(User2 user, boolean login) {
-        System.out.println("Enter email address:");
-        getInput();
+    public void signUpEmail(Account account, boolean login) {
         clearScreen();
-        while (canContinue()) {
-            switch (user.setEmail(input)) {
-                case NONE -> userSignUpPhoneNumber(user, login);
-                case INDISTINCT -> System.out.println("This email address is already in use");
-                default -> System.out.println("Invalid email address!");
+        System.out.print("Enter email address:");
+        String email = ScannerWrapper.nextLine();
+        while (canContinue(email)) {
+            switch (account.setEmail(email)) {
+                case NONE -> signUpPhoneNumber(account, login);
+                case INDISTINCT -> {
+                    clearScreen();
+                    System.out.println("This email address is already in use");
+                }
+                default -> {
+                    clearScreen();
+                    System.out.println("Invalid email address!");
+                }
             }
             if (!loggedOut) {
-                System.out.println("Enter email address:");
-                getInput();
+                System.out.print("Enter email address:");
+                email = ScannerWrapper.nextLine();
                 clearScreen();
             }
         }
     }
 
-    public void userSignUpPhoneNumber(User2 user, boolean login) {
-        System.out.println("Enter phone number:");
-        getInput();
+    public void signUpPhoneNumber(Account account, boolean login) {
         clearScreen();
-        while (canContinue()) {
-            switch (user.setPhoneNumber(input)) {
+        System.out.print("Enter phone number:");
+        String phone = ScannerWrapper.nextLine();
+        while (canContinue(phone)) {
+            switch (account.setPhone(phone)) {
                 case NONE -> {
-                    DB.addUser(user);
-                    if (login) {
-                        new UserOptions(user).userOptions();
-                    }
+                    db.accountsDB.addAccount(account);
+                    signupRole(account, login);
                     loggedOut = true;
                 }
-                case INDISTINCT -> System.out.println("This phone address is already in use");
-                default -> System.out.println("Invalid phone number!");
+                case INDISTINCT -> {
+                    clearScreen();
+                    System.out.println("This phone address is already in use");
+                }
+                default -> {
+                    clearScreen();
+                    System.out.println("Invalid phone number!");
+                }
             }
             if (!loggedOut) {
-                System.out.println("Enter phone number:");
-                getInput();
+                System.out.print("Enter phone number:");
+                phone = ScannerWrapper.nextLine();
                 clearScreen();
             }
         }
     }
 
-    @Override protected void getInput() {
-        input = scannerWrapper.nextLine();
+    private void signupRole(Account account, boolean login) {
+        Role option;
+        while ((option = printMenuOptions("Role", Role.class)) != null) {
+            switch (option) {
+                case USER -> {
+                    account.addRole(Role.USER);
+                }
+                case GAME_DEVELOPER -> {
+                    account.addRole(Role.GAME_DEVELOPER);
+                }
+                case ACCESSORY_SELLER -> {
+                    account.addRole(Role.ACCESSORY_SELLER);
+                }
+                case ADMIN -> {
+                    account.addRole(Role.ADMIN);
+                }
+                default -> {
+                }
+            }
+            if (login) {
+                roleLogin(account, option);
+            }
+        }
     }
 
-    @Override protected boolean canContinue() {
+    protected boolean canContinue(String input) {
         if (input.equals("**")) {
             System.out.println("Exiting...");
             System.exit(0);

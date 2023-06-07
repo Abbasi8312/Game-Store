@@ -1,16 +1,16 @@
 package ir.ac.kntu.menu.user.options;
 
+import ir.ac.kntu.database.DB;
 import ir.ac.kntu.menu.user.UserMenu;
 import ir.ac.kntu.menu.user.friends.FriendsMenu;
-import ir.ac.kntu.menu.user.game.NextMenu;
-import ir.ac.kntu.menu.user.game.SelectGame;
+import ir.ac.kntu.menu.user.product.NextMenu;
+import ir.ac.kntu.menu.user.product.SelectGame;
 import ir.ac.kntu.menu.user.profile.ProfileMenu;
-import ir.ac.kntu.model.User2;
-import ir.ac.kntu.utility.ConsoleCommand;
+import ir.ac.kntu.model.role.User;
 
 public class UserOptions extends UserMenu {
-    public UserOptions(User2 user) {
-        super();
+    public UserOptions(DB db, User user) {
+        super(db);
         currentUser = user;
     }
 
@@ -21,13 +21,15 @@ public class UserOptions extends UserMenu {
         System.out.println("3. Library");
         System.out.println("4. Friends");
         getInput();
-        ConsoleCommand.clearScreen();
+        clearScreen();
         while (canContinue()) {
             switch (input) {
-                case "1" -> new ProfileMenu(currentUser).profile();
-                case "2" -> new SelectGame(NextMenu.STORE, currentUser, DB.getAllGames()).store();
-                case "3" -> new SelectGame(NextMenu.LIBRARY, currentUser, currentUser.getGames()).store();
-                case "4" -> new FriendsMenu(currentUser).friendsOptions();
+                case "1" -> new ProfileMenu(db, currentUser).profile();
+                case "2" ->
+                        new SelectGame(db, NextMenu.STORE, currentUser.account, db.productsDB.getAllProducts()).store();
+                case "3" ->
+                        new SelectGame(db, NextMenu.LIBRARY, currentUser.account, currentUser.getProducts()).store();
+                case "4" -> new FriendsMenu(db, currentUser).friendsOptions();
                 default -> System.out.println("Wrong input!");
             }
             System.out.println("Enter a number.");
@@ -36,7 +38,7 @@ public class UserOptions extends UserMenu {
             System.out.println("3. Library");
             System.out.println("4. Friends");
             getInput();
-            ConsoleCommand.clearScreen();
+            clearScreen();
         }
     }
 }

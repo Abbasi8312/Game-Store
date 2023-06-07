@@ -1,4 +1,4 @@
-package ir.ac.kntu.menu.user.game;
+package ir.ac.kntu.menu.user.product;
 
 public enum NextMenu {
     STORE,

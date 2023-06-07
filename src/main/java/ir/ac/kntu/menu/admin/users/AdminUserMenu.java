@@ -1,23 +1,29 @@
 package ir.ac.kntu.menu.admin.users;
 
+import ir.ac.kntu.database.DB;
 import ir.ac.kntu.menu.admin.AdminMenu;
 import ir.ac.kntu.menu.auth.AuthMenu;
 import ir.ac.kntu.menu.user.profile.ProfileMenu;
-import ir.ac.kntu.model.User2;
-import ir.ac.kntu.utility.ConsoleCommand;
+import ir.ac.kntu.model.Account;
+import ir.ac.kntu.model.role.Admin;
+import ir.ac.kntu.model.role.User;
 
 public class AdminUserMenu extends AdminMenu {
 
     private boolean back = false;
 
+    public AdminUserMenu(DB db, Admin admin) {
+        super(db, admin);
+    }
+
     public void userOptions() {
         System.out.println("1. Create new user");
         System.out.println("2. Modify an existing user");
         getInput();
-        ConsoleCommand.clearScreen();
+        clearScreen();
         while (canContinue()) {
             switch (input) {
-                case "1" -> new AuthMenu().userSignUpUsername(false);
+                case "1" -> new AuthMenu(db).signUpUsername(false);
                 case "2" -> getUser();
                 default -> System.out.println("Invalid input");
             }
@@ -25,7 +31,7 @@ public class AdminUserMenu extends AdminMenu {
             System.out.println("1. Create new user");
             System.out.println("2. Modify an existing user");
             getInput();
-            ConsoleCommand.clearScreen();
+            clearScreen();
         }
     }
 
@@ -34,7 +40,7 @@ public class AdminUserMenu extends AdminMenu {
         System.out.println("2. Find user by phone number");
         System.out.println("3. Find user by email address");
         getInput();
-        ConsoleCommand.clearScreen();
+        clearScreen();
         while (canContinue()) {
             switch (input) {
                 case "1" -> findByUsername();
@@ -47,25 +53,25 @@ public class AdminUserMenu extends AdminMenu {
             System.out.println("2. Find user by phone number");
             System.out.println("3. Find user by email address");
             getInput();
-            ConsoleCommand.clearScreen();
+            clearScreen();
         }
     }
 
     public void findByUsername() {
         System.out.println("Enter username");
         getInput();
-        ConsoleCommand.clearScreen();
+        clearScreen();
         while (canContinue()) {
-            User2 user = DB.findUserByUsername(input);
-            if (user != null) {
-                modifyUserOptions(user);
+            Account account = db.accountsDB.findAccountByName(input);
+            if (account != null) {
+                modifyUserOptions(account);
             } else {
-                System.out.println("There is no user with this username");
+                System.out.println("There is no account with this username");
             }
             if (!back) {
                 System.out.println("Enter username");
                 getInput();
-                ConsoleCommand.clearScreen();
+                clearScreen();
             }
         }
     }
@@ -73,18 +79,18 @@ public class AdminUserMenu extends AdminMenu {
     public void findByPhoneNumber() {
         System.out.println("Enter phone number");
         getInput();
-        ConsoleCommand.clearScreen();
+        clearScreen();
         while (canContinue()) {
-            User2 user = DB.findUserByPhoneNumber(input);
-            if (user != null) {
-                modifyUserOptions(user);
+            Account account = db.accountsDB.findAccountByPhone(input);
+            if (account != null) {
+                modifyUserOptions(account);
             } else {
-                System.out.println("There is no user with this phone number");
+                System.out.println("There is no account with this phone number");
             }
             if (!back) {
                 System.out.println("Enter phone number");
                 getInput();
-                ConsoleCommand.clearScreen();
+                clearScreen();
             }
         }
     }
@@ -92,64 +98,64 @@ public class AdminUserMenu extends AdminMenu {
     public void findByEmail() {
         System.out.println("Enter email address");
         getInput();
-        ConsoleCommand.clearScreen();
+        clearScreen();
         while (canContinue()) {
-            User2 user = DB.findUserByEmail(input);
-            if (user != null) {
-                modifyUserOptions(user);
+            Account account = db.accountsDB.findAccountByEmail(input);
+            if (account != null) {
+                modifyUserOptions(account);
             } else {
-                System.out.println("There is no user with this email address");
+                System.out.println("There is no account with this email address");
             }
             if (!back) {
                 System.out.println("Enter email address");
                 getInput();
-                ConsoleCommand.clearScreen();
+                clearScreen();
             }
         }
     }
 
-    public void modifyUserOptions(User2 user) {
-        System.out.println("1. Show user profile");
-        System.out.println("2. Change user profile");
-        System.out.println("3. Change user wallet balance");
-        System.out.println("4. Delete user");
+    public void modifyUserOptions(Account account) {
+        System.out.println("1. Show account profile");
+        System.out.println("2. Change account profile");
+        System.out.println("3. Change account wallet balance");
+        System.out.println("4. Delete account");
         getInput();
-        ConsoleCommand.clearScreen();
+        clearScreen();
         while (canContinue()) {
             switch (input) {
-                case "1" -> showUserProfile(user);
-                case "2" -> new ProfileMenu(user).changeProfile();
-                case "3" -> changeUserWallet(user);
-                case "4" -> deleteUser(user);
+                case "1" -> showUserProfile(account);
+                case "2" -> new ProfileMenu(db, account.user).changeProfile();
+                case "3" -> changeUserWallet(account.user);
+                case "4" -> deleteUser(account);
                 default -> System.out.println("Invalid input");
             }
             if (!back) {
-                System.out.println("1. Show user profile");
-                System.out.println("2. Change user profile");
-                System.out.println("3. Change user wallet balance");
-                System.out.println("4. Delete user");
+                System.out.println("1. Show account profile");
+                System.out.println("2. Change account profile");
+                System.out.println("3. Change account wallet balance");
+                System.out.println("4. Delete account");
                 getInput();
-                ConsoleCommand.clearScreen();
+                clearScreen();
             }
         }
         back = true;
     }
 
-    public void showUserProfile(User2 user) {
-        System.out.println(user);
+    public void showUserProfile(Account account) {
+        System.out.println(account);
         getInput();
-        ConsoleCommand.clearScreen();
+        clearScreen();
         while (canContinue()) {
-            System.out.println(user);
+            System.out.println(account);
             getInput();
-            ConsoleCommand.clearScreen();
+            clearScreen();
         }
     }
 
-    public void changeUserWallet(User2 user) {
+    public void changeUserWallet(User user) {
         System.out.println("Enter a new wallet balance for this account");
         getInput();
-        ConsoleCommand.clearScreen();
+        clearScreen();
         while (canContinue()) {
             if (input.matches("^[0-9]+(\\.[0-9]+)?$")) {
                 user.setWalletBalance(Double.parseDouble(input));
@@ -159,28 +165,28 @@ public class AdminUserMenu extends AdminMenu {
             }
             System.out.println("Enter a new wallet balance for this account");
             getInput();
-            ConsoleCommand.clearScreen();
+            clearScreen();
         }
     }
 
-    public void deleteUser(User2 user) {
-        System.out.println("Are you sure you want to delete " + user.getUsername() + "?");
+    public void deleteUser(Account account) {
+        System.out.println("Are you sure you want to delete " + account.getName() + "?");
         System.out.println("1. Yes");
         getInput();
-        ConsoleCommand.clearScreen();
+        clearScreen();
         while (canContinue()) {
             if (input.equals("1")) {
-                DB.removeUser(user);
+                db.accountsDB.removeAccount(account);
                 back = true;
                 break;
             } else {
                 System.out.println("Invalid input");
             }
             if (!back) {
-                System.out.println("Are you sure you want to delete " + user.getUsername() + "?");
+                System.out.println("Are you sure you want to delete " + account.getName() + "?");
                 System.out.println("1. Yes");
                 getInput();
-                ConsoleCommand.clearScreen();
+                clearScreen();
             }
         }
     }

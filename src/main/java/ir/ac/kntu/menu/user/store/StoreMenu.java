@@ -1,64 +1,64 @@
 package ir.ac.kntu.menu.user.store;
 
-import ir.ac.kntu.model.Game;
+import ir.ac.kntu.database.DB;
 import ir.ac.kntu.menu.user.UserMenu;
-import ir.ac.kntu.model.User2;
-import ir.ac.kntu.utility.ConsoleCommand;
+import ir.ac.kntu.model.Product;
+import ir.ac.kntu.model.role.User;
 import ir.ac.kntu.utility.ErrorType;
 
 public class StoreMenu extends UserMenu {
-    public StoreMenu(User2 user) {
-        super();
+    public StoreMenu(DB db, User user) {
+        super(db);
         currentUser = user;
     }
 
-    public void storeGame(Game game) {
-        System.out.println(game);
-        boolean canAddGame = !currentUser.hasGame(game);
+    public void storeProduct(Product product) {
+        System.out.println(product);
+        boolean canAddGame = !currentUser.hasProduct(product);
         if (canAddGame) {
-            System.out.println("1. Buy game");
+            System.out.println("1. Buy product");
         }
-        System.out.println("2. Gift game");
+        System.out.println("2. Gift product");
         getInput();
-        ConsoleCommand.clearScreen();
+        clearScreen();
         while (canContinue()) {
             if (canAddGame && input.equals("1")) {
-                if (currentUser.buyGame(game)) {
-                    System.out.println(game.getName() + " is added to your library");
+                if (currentUser.buyProduct(product)) {
+                    System.out.println(product.getName() + " is added to your library");
                 } else {
-                    System.out.println("You don't have enough balance in your wallet to buy this game");
+                    System.out.println("You don't have enough balance in your wallet to buy this product");
                 }
                 break;
             } else if (input.equals("2")) {
-                giftGame(game);
+                giftGame(product);
                 break;
             } else {
                 System.out.println("Invalid input!");
             }
-            System.out.println(game);
+            System.out.println(product);
             if (canAddGame) {
-                System.out.println("1. Buy game");
+                System.out.println("1. Buy product");
             }
-            System.out.println("2. Gift game");
+            System.out.println("2. Gift product");
             getInput();
-            ConsoleCommand.clearScreen();
+            clearScreen();
         }
     }
 
-    public void giftGame(Game game) {
+    public void giftGame(Product product) {
         System.out.println("Enter a username");
         getInput();
-        ConsoleCommand.clearScreen();
+        clearScreen();
         while (canContinue()) {
-            User2 user = DB.findUserByUsername(input);
+            User user = db.accountsDB.findAccountByName(input).user;
             if (user != null) {
-                ErrorType errorType = currentUser.buyGame(game, user);
+                ErrorType errorType = currentUser.buyProduct(product, user);
                 if (errorType == ErrorType.NONE) {
-                    System.out.println(game.getName() + " is added to user's library");
-                } else if (errorType == ErrorType.NOT_ENOUGH_BALANCE){
-                    System.out.println("You don't have enough balance in your wallet to buy this game");
+                    System.out.println(product.getName() + " is added to user's library");
+                } else if (errorType == ErrorType.NOT_ENOUGH_BALANCE) {
+                    System.out.println("You don't have enough balance in your wallet to buy this product");
                 } else {
-                    System.out.println("User already has this game");
+                    System.out.println("User already has this product");
                 }
                 break;
             } else {
@@ -66,7 +66,7 @@ public class StoreMenu extends UserMenu {
             }
             System.out.println("Enter a username");
             getInput();
-            ConsoleCommand.clearScreen();
+            clearScreen();
         }
     }
 }

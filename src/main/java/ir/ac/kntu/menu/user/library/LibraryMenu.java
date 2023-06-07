@@ -1,13 +1,14 @@
 package ir.ac.kntu.menu.user.library;
 
-import ir.ac.kntu.model.Game;
+import ir.ac.kntu.database.DB;
 import ir.ac.kntu.menu.user.UserMenu;
-import ir.ac.kntu.model.User2;
-import ir.ac.kntu.utility.ConsoleCommand;
+import ir.ac.kntu.model.Game;
+import ir.ac.kntu.model.Product;
+import ir.ac.kntu.model.role.User;
 
 public class LibraryMenu extends UserMenu {
-    public LibraryMenu(User2 user) {
-        super();
+    public LibraryMenu(DB db, User user) {
+        super(db);
         currentUser = user;
     }
 
@@ -16,10 +17,10 @@ public class LibraryMenu extends UserMenu {
         System.out.println("1. Community");
         System.out.println("2. Rate");
         getInput();
-        ConsoleCommand.clearScreen();
+        clearScreen();
         while (canContinue()) {
             switch (input) {
-                case "1" -> gameCommunity(game);
+                case "1" -> productCommunity(game);
                 case "2" -> gameRate(game);
                 default -> System.out.println("Invalid input");
             }
@@ -27,23 +28,23 @@ public class LibraryMenu extends UserMenu {
             System.out.println("1. Community");
             System.out.println("2. Rate");
             getInput();
-            ConsoleCommand.clearScreen();
+            clearScreen();
         }
     }
 
-    void gameCommunity(Game game) {
-        for (String key : game.getAllReviews().keySet()) {
+    void productCommunity(Product product) {
+        for (String key : product.getReviews().keySet()) {
             System.out.println(key + ":");
-            System.out.println(game.getReview(key));
+            System.out.println(product.getReview(key));
         }
-        System.out.println("Enter your review of the game");
+        System.out.println("Enter your review of the product");
         getInput();
-        ConsoleCommand.clearScreen();
+        clearScreen();
         if (canContinue()) {
             if (input.equals("")) {
-                game.removeReview(currentUser.getUsername());
+                product.removeReview(currentUser.account.getName());
             } else {
-                game.addReview(currentUser.getUsername(), input);
+                product.addReview(currentUser.account.getName(), input);
             }
         }
     }
@@ -51,24 +52,24 @@ public class LibraryMenu extends UserMenu {
     void gameRate(Game game) {
         System.out.println("Enter a number between 1 and 10 or just press enter to remove your rating");
         getInput();
-        ConsoleCommand.clearScreen();
+        clearScreen();
         while (canContinue()) {
             if (input.matches("[0-9]+(\\.[0-9]+)?")) {
                 if (Double.parseDouble(input) >= 1 && Double.parseDouble(input) <= 10) {
-                    game.rate(currentUser.getUsername(), Double.parseDouble(input));
+                    game.rate(currentUser.account.getName(), Double.parseDouble(input));
                     break;
                 } else {
                     System.out.println("Your rate should be between 1 and 10");
                 }
             } else if (input.equals("")) {
-                game.removeRate(currentUser.getUsername());
+                game.removeRate(currentUser.account.getName());
                 break;
             } else {
                 System.out.println("Invalid input");
             }
             System.out.println("Enter a number between 1 and 10");
             getInput();
-            ConsoleCommand.clearScreen();
+            clearScreen();
         }
     }
 }

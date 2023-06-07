@@ -6,14 +6,21 @@ import java.util.Objects;
 
 public abstract class Product {
     private final Map<String, String> reviews;
+
     private String name;
+
     private double price;
+
     private String description;
 
     public Product(String name, double price, String description) {
         this.name = name;
         this.price = price;
         this.description = description;
+        reviews = new HashMap<>();
+    }
+
+    public Product() {
         reviews = new HashMap<>();
     }
 

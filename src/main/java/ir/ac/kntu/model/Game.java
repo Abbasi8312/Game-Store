@@ -2,6 +2,7 @@ package ir.ac.kntu.model;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class Game extends Product {
     private final Map<String, Double> rates;
@@ -12,6 +13,12 @@ public class Game extends Product {
 
     public Game(String name, double price, String description) {
         super(name, price, description);
+        rating = 0;
+        rates = new HashMap<>();
+    }
+
+    public Game() {
+        super();
         rating = 0;
         rates = new HashMap<>();
     }
@@ -48,5 +55,29 @@ public class Game extends Product {
 
     public void setGenre(GameGenre gameGenre) {
         this.gameGenre = gameGenre;
+    }
+
+    @Override public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        Game game = (Game) o;
+        return Double.compare(game.rating, rating) == 0 && Objects.equals(rates, game.rates) &&
+                gameGenre == game.gameGenre;
+    }
+
+    @Override public int hashCode() {
+        return Objects.hash(super.hashCode(), rates, gameGenre, rating);
+    }
+
+    @Override public String toString() {
+        return super.toString() + "\nGame{" + "rates=" + rates + ", gameGenre=" + gameGenre + ", rating=" + rating +
+                '}';
     }
 }

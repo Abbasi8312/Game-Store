@@ -3,15 +3,16 @@ package ir.ac.kntu.model.role;
 import ir.ac.kntu.database.DB;
 import ir.ac.kntu.model.Account;
 import ir.ac.kntu.model.Game;
+import ir.ac.kntu.model.Product;
 import ir.ac.kntu.utility.ErrorType;
 import ir.ac.kntu.utility.Trie;
 
 import java.util.*;
 
 public class User {
-    private final Account account;
+    public final Account account;
 
-    private final Trie gameTrie;
+    private final Trie productTrie;
 
     private final Trie friendTrie;
 
@@ -23,19 +24,19 @@ public class User {
 
     private final Set<User> pendingRequests;
 
-    private final List<Game> games;
+    private final List<Product> products;
 
     private double walletBalance;
 
     public User(Account account) {
         this.account = account;
-        gameTrie = new Trie();
+        productTrie = new Trie();
         friendTrie = new Trie();
         db = new DB();
         friends = new HashMap<>();
         friendList = new ArrayList<>();
         pendingRequests = new HashSet<>();
-        games = new ArrayList<>();
+        products = new ArrayList<>();
         walletBalance = 0;
     }
 
@@ -51,74 +52,73 @@ public class User {
         walletBalance += value;
     }
 
-    public List<Game> getGames() {
-        List<Game> gameList = new ArrayList<>();
-        for (Game game : games) {
-            if (game != null) {
-                gameList.add(game);
+    public List<Product> getProducts() {
+        List<Product> productList = new ArrayList<>();
+        for (Product product : products) {
+            if (product != null) {
+                productList.add(product);
             }
         }
-        return gameList;
+        return productList;
     }
 
-    public void addGame(Game game) {
-        games.add(game);
-        gameTrie.insert(game.getName(), games.size() - 1);
+    public void addProduct(Product product) {
+        products.add(product);
+        productTrie.insert(product.getName(), products.size() - 1);
     }
 
-    public boolean buyGame(Game game) {
-        if (walletBalance >= game.getPrice()) {
-            walletBalance -= game.getPrice();
-            addGame(game);
+    public boolean buyProduct(Product product) {
+        if (walletBalance >= product.getPrice()) {
+            walletBalance -= product.getPrice();
+            addProduct(product);
             return true;
         }
         return false;
     }
 
-    public ErrorType buyGame(Game game, User user) {
-        if (user.hasGame(game)) {
+    public ErrorType buyProduct(Product product, User user) {
+        if (user.hasProduct(product)) {
             return ErrorType.ALREADY_HAS_GAME;
-        } else if (walletBalance >= game.getPrice()) {
-            walletBalance -= game.getPrice();
-            user.addGame(game);
+        } else if (walletBalance >= product.getPrice()) {
+            walletBalance -= product.getPrice();
+            user.addProduct(product);
             return ErrorType.NONE;
         } else {
             return ErrorType.NOT_ENOUGH_BALANCE;
         }
     }
 
-    public boolean hasGame(Game game) {
-        return games.contains(game);
+    public boolean hasProduct(Product product) {
+        return products.contains(product);
     }
 
-    public List<Game> filterGameByName(String string) {
-        List<Integer> indexes = gameTrie.searchPrefix(string);
-        List<Game> games = new ArrayList<>();
+    public List<Product> filterProductsByName(String string) {
+        List<Integer> indexes = productTrie.searchPrefix(string);
+        List<Product> products = new ArrayList<>();
         for (Integer index : indexes) {
-            games.add(this.games.get(index));
+            products.add(this.products.get(index));
         }
-        return games;
+        return products;
     }
 
-    public List<Game> filterGameByPrice(double min, double max) {
-        //TODO
-        List<Game> tmp = new ArrayList<>();
-        for (Game game : games) {
-            if (game == null) {
+    public List<Product> filterProductsByPrice(double min, double max) {
+        List<Product> tmp = new ArrayList<>();
+        for (Product product : products) {
+            if (product == null) {
                 continue;
             }
-            if (game.getPrice() >= min && game.getPrice() <= max) {
-                tmp.add(game);
+            if (product.getPrice() >= min && product.getPrice() <= max) {
+                tmp.add(product);
             }
         }
         return tmp;
     }
 
     public void removeGame(Game game) {
-        int index = games.indexOf(game);
+        int index = products.indexOf(game);
         if (index != -1) {
-            gameTrie.remove(game.getName(), index);
-            games.set(index, null);
+            productTrie.remove(game.getName(), index);
+            products.set(index, null);
         }
     }
 
@@ -186,18 +186,20 @@ public class User {
             return false;
         }
         User user = (User) o;
-        return Double.compare(user.walletBalance, walletBalance) == 0 && Objects.equals(gameTrie, user.gameTrie) &&
-                Objects.equals(friendTrie, user.friendTrie) && Objects.equals(db, user.db) &&
-                Objects.equals(friends, user.friends) && Objects.equals(friendList, user.friendList) &&
-                Objects.equals(pendingRequests, user.pendingRequests) && Objects.equals(games, user.games);
+        return Double.compare(user.walletBalance, walletBalance) == 0 &&
+                Objects.equals(productTrie, user.productTrie) && Objects.equals(friendTrie, user.friendTrie) &&
+                Objects.equals(db, user.db) && Objects.equals(friends, user.friends) &&
+                Objects.equals(friendList, user.friendList) && Objects.equals(pendingRequests, user.pendingRequests) &&
+                Objects.equals(products, user.products);
     }
 
     @Override public int hashCode() {
-        return Objects.hash(gameTrie, friendTrie, db, friends, friendList, pendingRequests, games, walletBalance);
+        return Objects.hash(productTrie, friendTrie, db, friends, friendList, pendingRequests, products, walletBalance);
     }
 
     @Override public String toString() {
-        return "User{" + "friends=" + friends + ", friendList=" + friendList + ", pendingRequests=" + pendingRequests +
-                ", games=" + games + ", walletBalance=" + walletBalance + '}';
+        return account.toString() + "\nUser{" + "friends=" + friends + ", friendList=" + friendList +
+                ", pendingRequests=" + pendingRequests + ", games=" + products + ", walletBalance=" + walletBalance +
+                '}';
     }
 }

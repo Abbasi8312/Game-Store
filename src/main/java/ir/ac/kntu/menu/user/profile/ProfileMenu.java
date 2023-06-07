@@ -1,14 +1,14 @@
 package ir.ac.kntu.menu.user.profile;
 
+import ir.ac.kntu.database.DB;
 import ir.ac.kntu.menu.user.UserMenu;
-import ir.ac.kntu.model.User2;
-import ir.ac.kntu.utility.ConsoleCommand;
+import ir.ac.kntu.model.role.User;
 
 public class ProfileMenu extends UserMenu {
     private boolean changedProfile;
 
-    public ProfileMenu(User2 user) {
-        super();
+    public ProfileMenu(DB db, User user) {
+        super(db);
         currentUser = user;
     }
 
@@ -18,7 +18,7 @@ public class ProfileMenu extends UserMenu {
         System.out.println("1. Change profile");
         System.out.println("2. Charge wallet");
         getInput();
-        ConsoleCommand.clearScreen();
+        clearScreen();
         while (canContinue()) {
             switch (input) {
                 case "1" -> changeProfile();
@@ -29,7 +29,7 @@ public class ProfileMenu extends UserMenu {
             System.out.println("1. Change profile");
             System.out.println("2. Charge wallet");
             getInput();
-            ConsoleCommand.clearScreen();
+            clearScreen();
             changedProfile = false;
         }
     }
@@ -40,7 +40,7 @@ public class ProfileMenu extends UserMenu {
         System.out.println("3. Change email address");
         System.out.println("4. Change phone number");
         getInput();
-        ConsoleCommand.clearScreen();
+        clearScreen();
         while (canContinue()) {
             switch (input) {
                 case "1" -> changeUsername();
@@ -55,7 +55,7 @@ public class ProfileMenu extends UserMenu {
                 System.out.println("3. Change email address");
                 System.out.println("4. Change phone number");
                 getInput();
-                ConsoleCommand.clearScreen();
+                clearScreen();
             }
         }
     }
@@ -63,15 +63,15 @@ public class ProfileMenu extends UserMenu {
     public void changeUsername() {
         System.out.println("Enter a new username for this account:");
         getInput();
-        ConsoleCommand.clearScreen();
+        clearScreen();
         while (canContinue()) {
-            switch (currentUser.setUsername(input)) {
+            switch (currentUser.account.setName(input)) {
                 case NONE -> {
                     changedProfile = true;
                     return;
                 }
                 case INDISTINCT -> {
-                    if (currentUser.getUsername().equals(input)) {
+                    if (currentUser.account.getName().equals(input)) {
                         System.out.println("No changes have been made to the username.");
                         changedProfile = true;
                         return;
@@ -85,16 +85,16 @@ public class ProfileMenu extends UserMenu {
             }
             System.out.println("Enter a new username for this account:");
             getInput();
-            ConsoleCommand.clearScreen();
+            clearScreen();
         }
     }
 
     public void changePassword() {
         System.out.println("Enter a new password for this account:");
         getInput();
-        ConsoleCommand.clearScreen();
+        clearScreen();
         while (canContinue()) {
-            if (currentUser.setPassword(input)) {
+            if (currentUser.account.setPassword(input)) {
                 changedProfile = true;
                 break;
             } else {
@@ -103,22 +103,22 @@ public class ProfileMenu extends UserMenu {
             }
             System.out.println("Enter a new password for this account:");
             getInput();
-            ConsoleCommand.clearScreen();
+            clearScreen();
         }
     }
 
     public void changeEmail() {
         System.out.println("Enter a new email address for this account:");
         getInput();
-        ConsoleCommand.clearScreen();
+        clearScreen();
         while (canContinue()) {
-            switch (currentUser.setEmail(input)) {
+            switch (currentUser.account.setEmail(input)) {
                 case NONE -> {
                     changedProfile = true;
                     return;
                 }
                 case INDISTINCT -> {
-                    if (currentUser.getEmail().equals(input)) {
+                    if (currentUser.account.getEmail().equals(input)) {
                         System.out.println("No changes have been made to the email address.");
                         changedProfile = true;
                         return;
@@ -130,22 +130,22 @@ public class ProfileMenu extends UserMenu {
             }
             System.out.println("Enter a new email address for this account:");
             getInput();
-            ConsoleCommand.clearScreen();
+            clearScreen();
         }
     }
 
     public void changePhoneNumber() {
         System.out.println("Enter a new phone number for this account:");
         getInput();
-        ConsoleCommand.clearScreen();
+        clearScreen();
         while (canContinue()) {
-            switch (currentUser.setPhoneNumber(input)) {
+            switch (currentUser.account.setPhone(input)) {
                 case NONE -> {
                     changedProfile = true;
                     return;
                 }
                 case INDISTINCT -> {
-                    if (currentUser.getPhoneNumber().equals(input)) {
+                    if (currentUser.account.getPhone().equals(input)) {
                         System.out.println("No changes have been made to the phone number.");
                         changedProfile = true;
                         return;
@@ -157,14 +157,14 @@ public class ProfileMenu extends UserMenu {
             }
             System.out.println("Enter a new phone number for this account:");
             getInput();
-            ConsoleCommand.clearScreen();
+            clearScreen();
         }
     }
 
     public void chargeWallet() {
         System.out.println("How much do you want to charge your wallet?");
         getInput();
-        ConsoleCommand.clearScreen();
+        clearScreen();
         while (canContinue()) {
             if (input.matches("^[0-9]{0,5}\\.?[0-9]{0,5}$") && !input.equals(".") && input.matches("^.*[0-9].*$")) {
                 currentUser.chargeWallet(Double.parseDouble(input));
@@ -174,7 +174,7 @@ public class ProfileMenu extends UserMenu {
             }
             System.out.println("How much do you want to charge your wallet?");
             getInput();
-            ConsoleCommand.clearScreen();
+            clearScreen();
         }
     }
 

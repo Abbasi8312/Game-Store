@@ -1,33 +1,39 @@
 package ir.ac.kntu.menu.admin.games;
 
+import ir.ac.kntu.database.DB;
+import ir.ac.kntu.menu.admin.AdminMenu;
+import ir.ac.kntu.menu.user.product.NextMenu;
+import ir.ac.kntu.menu.user.product.SelectGame;
 import ir.ac.kntu.model.Game;
 import ir.ac.kntu.model.GameGenre;
-import ir.ac.kntu.menu.admin.AdminMenu;
-import ir.ac.kntu.menu.user.game.NextMenu;
-import ir.ac.kntu.menu.user.game.SelectGame;
-import ir.ac.kntu.utility.ConsoleCommand;
+import ir.ac.kntu.model.role.Admin;
 
 import java.util.Arrays;
 
 public class AdminGameMenu extends AdminMenu {
     private boolean back = false;
 
+    public AdminGameMenu(DB db, Admin admin) {
+        super(db, admin);
+    }
+
     public void gameOptions() {
         System.out.println("1. Create new game");
         System.out.println("2. Modify an existing game");
         getInput();
-        ConsoleCommand.clearScreen();
+        clearScreen();
         while (canContinue()) {
             switch (input) {
                 case "1" -> createGame();
-                case "2" -> new SelectGame(NextMenu.ADMIN, null, DB.getAllGames()).store();
+                case "2" -> new SelectGame(db, NextMenu.ADMIN, currentAdmin.account,
+                        db.productsDB.getAllProducts()).store();
                 default -> System.out.println("Invalid input");
             }
             back = false;
             System.out.println("1. Create new game");
             System.out.println("2. Modify an existing game");
             getInput();
-            ConsoleCommand.clearScreen();
+            clearScreen();
         }
     }
 
@@ -38,14 +44,14 @@ public class AdminGameMenu extends AdminMenu {
     public void newGameName(Game game) {
         System.out.println("Enter a name for the game");
         getInput();
-        ConsoleCommand.clearScreen();
+        clearScreen();
         while (canContinue()) {
             game.setName(input);
             newGamePrice(game);
             if (!back) {
                 System.out.println("Enter a name for the game");
                 getInput();
-                ConsoleCommand.clearScreen();
+                clearScreen();
             }
         }
     }
@@ -53,7 +59,7 @@ public class AdminGameMenu extends AdminMenu {
     public void newGamePrice(Game game) {
         System.out.println("Enter a price for the game");
         getInput();
-        ConsoleCommand.clearScreen();
+        clearScreen();
         while (canContinue()) {
             if (input.matches("^[0-9]+(\\.[0-9]+)?$")) {
                 game.setPrice(Double.parseDouble(input));
@@ -64,7 +70,7 @@ public class AdminGameMenu extends AdminMenu {
             if (!back) {
                 System.out.println("Enter a price for the game");
                 getInput();
-                ConsoleCommand.clearScreen();
+                clearScreen();
             }
         }
     }
@@ -78,7 +84,7 @@ public class AdminGameMenu extends AdminMenu {
                 stringBuilder.append(input).append("\n");
                 getInput();
             } else {
-                ConsoleCommand.clearScreen();
+                clearScreen();
                 game.setDescription(String.valueOf(stringBuilder));
                 newGameGenre(game);
             }
@@ -89,12 +95,12 @@ public class AdminGameMenu extends AdminMenu {
         System.out.println("Enter a Genre for the game");
         System.out.println("All Genres: " + Arrays.toString(GameGenre.values()));
         getInput();
-        ConsoleCommand.clearScreen();
+        clearScreen();
         while (canContinue()) {
             GameGenre gameGenre = GameGenre.find(input);
             if (gameGenre != null) {
                 game.setGenre(gameGenre);
-                DB.addGame(game);
+                db.productsDB.addProduct(game);
                 System.out.println("Game created successfully");
                 back = true;
             } else {
@@ -104,7 +110,7 @@ public class AdminGameMenu extends AdminMenu {
                 System.out.println("Enter a Genre for the game");
                 System.out.println("All Genres: " + Arrays.toString(GameGenre.values()));
                 getInput();
-                ConsoleCommand.clearScreen();
+                clearScreen();
             }
         }
     }
@@ -116,7 +122,7 @@ public class AdminGameMenu extends AdminMenu {
         System.out.println("4. Change genre");
         System.out.println("5. Delete game");
         getInput();
-        ConsoleCommand.clearScreen();
+        clearScreen();
         while (canContinue()) {
             switch (input) {
                 case "1" -> changeGameName(game);
@@ -132,7 +138,7 @@ public class AdminGameMenu extends AdminMenu {
                     System.out.println("4. Change genre");
                     System.out.println("5. Delete game");
                     getInput();
-                    ConsoleCommand.clearScreen();
+                    clearScreen();
                     back = false;
                     continue;
                 }
@@ -144,7 +150,7 @@ public class AdminGameMenu extends AdminMenu {
     public void changeGameName(Game game) {
         System.out.println("Enter a new name for the game (Original name: " + game.getName() + ")");
         getInput();
-        ConsoleCommand.clearScreen();
+        clearScreen();
         if (canContinue()) {
             game.setName(input);
             System.out.println("Name changed successfully");
@@ -154,7 +160,7 @@ public class AdminGameMenu extends AdminMenu {
     public void changeGamePrice(Game game) {
         System.out.println("Enter a new price for the game (Original price: " + game.getPrice() + ")");
         getInput();
-        ConsoleCommand.clearScreen();
+        clearScreen();
         while (canContinue()) {
             if (input.matches("^[0-9]+(\\.[0-9]+)?$")) {
                 game.setPrice(Double.parseDouble(input));
@@ -166,7 +172,7 @@ public class AdminGameMenu extends AdminMenu {
             if (!back) {
                 System.out.println("Enter a new price for the game (Original price: " + game.getPrice() + ")");
                 getInput();
-                ConsoleCommand.clearScreen();
+                clearScreen();
             }
         }
     }
@@ -182,7 +188,7 @@ public class AdminGameMenu extends AdminMenu {
                 stringBuilder.append(input).append("\n");
                 getInput();
             } else {
-                ConsoleCommand.clearScreen();
+                clearScreen();
                 game.setDescription(String.valueOf(stringBuilder));
                 System.out.println("Description changed successfully");
                 break;
@@ -194,7 +200,7 @@ public class AdminGameMenu extends AdminMenu {
         System.out.println("Enter a new Genre for the game (Original genre: " + game.getGenre() + ")");
         System.out.println("All Genres: " + Arrays.toString(GameGenre.values()));
         getInput();
-        ConsoleCommand.clearScreen();
+        clearScreen();
         while (canContinue()) {
             GameGenre gameGenre = GameGenre.find(input);
             if (gameGenre != null) {
@@ -208,7 +214,7 @@ public class AdminGameMenu extends AdminMenu {
                 System.out.println("Enter a Genre for the game");
                 System.out.println("All Genres: " + Arrays.toString(GameGenre.values()));
                 getInput();
-                ConsoleCommand.clearScreen();
+                clearScreen();
             }
         }
     }
@@ -217,10 +223,10 @@ public class AdminGameMenu extends AdminMenu {
         System.out.println("Are you sure you want to delete " + game.getName() + "?");
         System.out.println("1. Yes");
         getInput();
-        ConsoleCommand.clearScreen();
+        clearScreen();
         while (canContinue()) {
             if (input.equals("1")) {
-                DB.removeGame(game);
+                db.productsDB.removeProduct(game);
                 System.out.println("Game deleted successfully");
                 back = true;
             } else {
@@ -230,7 +236,7 @@ public class AdminGameMenu extends AdminMenu {
                 System.out.println("Are you sure you want to delete " + game.getName() + "?");
                 System.out.println("1. Yes");
                 getInput();
-                ConsoleCommand.clearScreen();
+                clearScreen();
             }
         }
     }

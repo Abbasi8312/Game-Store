@@ -1,16 +1,16 @@
 package ir.ac.kntu.menu.user.friends;
 
+import ir.ac.kntu.database.DB;
 import ir.ac.kntu.menu.user.UserMenu;
-import ir.ac.kntu.menu.user.game.SelectGame;
-import ir.ac.kntu.model.User2;
-import ir.ac.kntu.utility.ConsoleCommand;
+import ir.ac.kntu.menu.user.product.SelectGame;
+import ir.ac.kntu.model.role.User;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class FriendsMenu extends UserMenu {
-    public FriendsMenu(User2 user) {
-        super();
+    public FriendsMenu(DB db, User user) {
+        super(db);
         currentUser = user;
     }
 
@@ -20,7 +20,7 @@ public class FriendsMenu extends UserMenu {
         System.out.println("3. Add friend");
         System.out.println("4. Friend requests");
         getInput();
-        ConsoleCommand.clearScreen();
+        clearScreen();
         while (canContinue()) {
             switch (input) {
                 case "1" -> friendsShowAll();
@@ -34,7 +34,7 @@ public class FriendsMenu extends UserMenu {
             System.out.println("3. Add friend");
             System.out.println("4. Friend requests");
             getInput();
-            ConsoleCommand.clearScreen();
+            clearScreen();
         }
     }
 
@@ -45,14 +45,14 @@ public class FriendsMenu extends UserMenu {
     public void addFriend() {
         System.out.println("Enter username");
         getInput();
-        ConsoleCommand.clearScreen();
+        clearScreen();
         while (canContinue()) {
-            User2 user = DB.findUserByUsername(input);
+            User user = db.accountsDB.findAccountByName(input).user;
             if (user == null) {
                 System.out.println("This username doesn't exist");
             } else if (user.equals(currentUser)) {
                 System.out.println("You can't send a friend request to yourself");
-            } else if (user.hasFriend(currentUser.getUsername())) {
+            } else if (user.hasFriend(currentUser.account.getName())) {
                 System.out.println("You are already friends with this user");
                 break;
             } else if (user.hasPendingRequest(currentUser)) {
@@ -65,19 +65,19 @@ public class FriendsMenu extends UserMenu {
             }
             System.out.println("Enter username");
             getInput();
-            ConsoleCommand.clearScreen();
+            clearScreen();
         }
     }
 
     public void filterFriendsByName() {
         System.out.println("What do you want to search?");
         getInput();
-        ConsoleCommand.clearScreen();
+        clearScreen();
         while (canContinue()) {
             selectUser(currentUser.filterFriendsByName(input), NextMenu.GAME);
             System.out.println("What do you want to search?");
             getInput();
-            ConsoleCommand.clearScreen();
+            clearScreen();
         }
     }
 
@@ -85,11 +85,11 @@ public class FriendsMenu extends UserMenu {
         selectUser(new ArrayList<>(currentUser.getPendingRequests()), NextMenu.REQUEST);
     }
 
-    public void answerRequest(User2 user) {
+    public void answerRequest(User user) {
         System.out.println("1. Accept");
         System.out.println("2. Decline");
         getInput();
-        ConsoleCommand.clearScreen();
+        clearScreen();
         while (canContinue()) {
             switch (input) {
                 case "1" -> {
@@ -105,21 +105,22 @@ public class FriendsMenu extends UserMenu {
             System.out.println("1. Accept");
             System.out.println("2. Decline");
             getInput();
-            ConsoleCommand.clearScreen();
+            clearScreen();
         }
     }
 
-    public void selectUser(List<User2> users, NextMenu nextMenu) {
+    public void selectUser(List<User> users, NextMenu nextMenu) {
         for (int i = 0; i < users.size(); i++) {
-            System.out.println(i + 1 + ". Username: " + users.get(i).getUsername());
+            System.out.println(i + 1 + ". Username: " + users.get(i).account.getName());
         }
         getInput();
-        ConsoleCommand.clearScreen();
+        clearScreen();
         while (canContinue()) {
             if (input.matches("^[0-9]+$") && Integer.parseInt(input) > 0 && Integer.parseInt(input) <= users.size()) {
                 if (nextMenu == NextMenu.GAME) {
-                    new SelectGame(ir.ac.kntu.menu.user.game.NextMenu.NONE, users.get(Integer.parseInt(input) - 1),
-                            users.get(Integer.parseInt(input) - 1).getGames()).store();
+                    new SelectGame(db, ir.ac.kntu.menu.user.product.NextMenu.NONE,
+                            users.get(Integer.parseInt(input) - 1).account,
+                            users.get(Integer.parseInt(input) - 1).getProducts()).store();
                 } else {
                     answerRequest(users.get(Integer.parseInt(input) - 1));
                     break;
@@ -128,10 +129,10 @@ public class FriendsMenu extends UserMenu {
                 System.out.println("Invalid input");
             }
             for (int i = 0; i < users.size(); i++) {
-                System.out.println(i + 1 + ". Username: " + users.get(i).getUsername());
+                System.out.println(i + 1 + ". Username: " + users.get(i).account.getName());
             }
             getInput();
-            ConsoleCommand.clearScreen();
+            clearScreen();
         }
     }
 
