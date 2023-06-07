@@ -55,7 +55,9 @@ public class AuthMenu extends Menu {
     private void roleLogin(Account account, Role option) {
         switch (option) {
             case USER -> {
+                account.user.login();
                 new UserOptions(db, account.user).userOptions();
+                account.user.logout();
             }
             case GAME_DEVELOPER -> {
             }

@@ -73,9 +73,9 @@ public class AccountsDB {
         return accountsByEmail.get(email);
     }
 
-    public void changeName(String oldAccountname, String newAccountname) {
-        accountsByName.put(newAccountname, accountsByName.get(oldAccountname));
-        accountsByName.remove(oldAccountname);
+    public void changeName(String oldAccountName, String newAccountName) {
+        accountsByName.put(newAccountName, accountsByName.get(oldAccountName));
+        accountsByName.remove(oldAccountName);
     }
 
     public void changePhone(String oldPhoneNumber, String newPhoneNumber) {
